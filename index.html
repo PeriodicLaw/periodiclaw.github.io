@@ -150,6 +150,81 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/07/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="PeriodicLaw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PeriodicLaw的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/07/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">类型系统</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-06-07 00:00:00 / Modified: 23:39:58" itemprop="dateCreated datePublished" datetime="2020-06-07T00:00:00+08:00">2020-06-07</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这篇来介绍一下程序语言的类型系统。部分内容是TAPL(Types And Programming Languages)的读书笔记,但不全是.</p>
+<h2 id="无类型lambda演算">无类型Lambda演算</h2>
+<p>无类型Lambda演算其实只有两个内容：抽象(Abstract)和应用(Apply).抽象是引入Lambda表达式<span class="math inline">\(\lambda x.t\)</span>,应用是函数调用<span class="math inline">\(t \; t\)</span>.</p>
+<p>对于无类型Lambda演算而言,其语义就是用替换完成函数调用,也就是<span class="math inline">\((\lambda x.t_1)t_2\)</span>等于用<span class="math inline">\(t_2\)</span>替换<span class="math inline">\(t_1\)</span>中自由出现的所有<span class="math inline">\(x\)</span>.</p>
+<p>基于这样的语法和语义,足以得到和图灵机等同的计算模型,例如Church数:</p>
+<p><span class="math display">\[0=\lambda s.\lambda z. z, 1=\lambda s.\lambda z.s\;z, 2=\lambda s.\lambda z.s\;s\;z,\cdots\]</span></p>
+<p>又例如Y组合子,可以用来构造递归函数:</p>
+<p><span class="math display">\[Y=\lambda f.(\lambda x.f(\lambda y.x\;x\;y))\;(\lambda x.f(\lambda y.x\;x\;y))\]</span></p>
+<p>因为<span class="math inline">\(Y\;f=f(Y\;f)\)</span>,所以也叫做不动点组合子.这个构造还是相当巧妙的.</p>
+<h2 id="简单类型lambda演算">简单类型Lambda演算</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/06/07/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/06/%E9%87%8D%E5%90%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -173,10 +248,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-06-06 00:00:00 / Modified: 03:08:33" itemprop="dateCreated datePublished" datetime="2020-06-06T00:00:00+08:00">2020-06-06</time>
+              <time title="Created: 2020-06-06 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-06T00:00:00+08:00">2020-06-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-07 23:38:39" itemprop="dateModified" datetime="2020-06-07T23:38:39+08:00">2020-06-07</time>
+              </span>
 
           
 
@@ -191,8 +272,9 @@
       
           <p>距离上次写博客又快一年了，感觉真是今非昔比。</p>
 <p>我从Jekyll迁移到了Hexo，因为Jekyll在本地环境跑不起来（之前怎么跑的？当然是在本地写，然后在Github Pages上面直接看）。</p>
-<p>使用Hexo的过程主要参考 https://gist.github.com/btfak/18938572f5df000ebe06fbd1872e4e39 ，数学公式支持则是参考 https://github.com/theme-next/hexo-theme-next/blob/master/docs/MATH.md 并使用hexo-renderer-pandoc。</p>
-<p>有一个坑就是nodejs不能太新，我换用了 <code>sudo pacman -S nodejs-lts-erbium</code> ，见 https://zhuanlan.zhihu.com/p/136552969 。</p>
+<p>使用Hexo的过程主要参考<a href="https://gist.github.com/btfak/18938572f5df000ebe06fbd1872e4e39" target="_blank" rel="noopener">https://gist.github.com/btfak/18938572f5df000ebe06fbd1872e4e39</a>，数学公式支持则是参考<a href="https://github.com/theme-next/hexo-theme-next/blob/master/docs/MATH.md" target="_blank" rel="noopener">https://github.com/theme-next/hexo-theme-next/blob/master/docs/MATH.md</a>并使用hexo-renderer-pandoc。</p>
+<p>有一个坑就是nodejs不能太新，我换用了<code>sudo pacman -S nodejs-lts-erbium</code>，见<a href="https://zhuanlan.zhihu.com/p/136552969" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/136552969</a>。</p>
+<p>06-07更新：使用<a href="https://github.com/chekun/hexo-excerpt" target="_blank" rel="noopener">https://github.com/chekun/hexo-excerpt</a>使得主页自动截断。</p>
 
       
     </div>
@@ -267,145 +349,14 @@
 <p>(确定性)有限自动机(DFA)是一个五元组<span class="math inline">\(M=(Q,\Sigma,\delta,q_0,F)\)</span>,其中<span class="math inline">\(Q\)</span>为状态的有限集,<span class="math inline">\(\Sigma\)</span>为字母表,<span class="math inline">\(δ:Q\times\Sigma\to Q\)</span>为转移函数,<span class="math inline">\(q_0\in Q\)</span>为初始状态,<span class="math inline">\(F\subseteq Q\)</span>为接受状态集合.DFA可以用状态图表示.</p>
 <p>设<span class="math inline">\(w=w_1w_2\cdots w_n\)</span>是一个字符串,如果存在一系列状态<span class="math inline">\(r_0,r_1,\cdots,r_n\)</span>使得<span class="math inline">\(r_0=q_0\)</span>,<span class="math inline">\(\delta(r_i,w_{i+1})=r_{i+1}\)</span>,<span class="math inline">\(r_n\in F\)</span>,则称<span class="math inline">\(w\)</span>被DFA<span class="math inline">\(M\)</span>所接受.DFA<span class="math inline">\(M\)</span>所接受的全体字符串<span class="math inline">\(L(M)=\\{w\mid M接受w\\}\)</span>称为<span class="math inline">\(M\)</span>所接受的语言.特别的,被某个DFA接受的语言称为正规语言(regular language).</p>
 <p>对语言我们可以定义正则运算:并运算<span class="math inline">\(A\cup B\)</span>,连接运算<span class="math inline">\(A\circ B\)</span>,星运算(闭包运算)<span class="math inline">\(A^*\)</span>.通过构造DFA乘积的方式我们可以证明正则语言的并还是正则语言.</p>
-<h2 id="非确定性">非确定性</h2>
-<p>非确定性有限自动机(NFA)是一个五元组<span class="math inline">\(N=(Q,\Sigma,\delta,q_0,F)\)</span>,其中<span class="math inline">\(Q\)</span>为状态的有限集,<span class="math inline">\(\Sigma\)</span>为字母表,<span class="math inline">\(δ:Q\times(\Sigma\cup\epsilon)\to\mathcal{P}(Q)\)</span>为转移函数,<span class="math inline">\(q_0\in Q\)</span>为初始状态,<span class="math inline">\(F\subseteq Q\)</span>为接受状态集合. NFA也可以用状态图表示;它与DFA的主要区别在于可以同时处在多个状态,并且可以进行空串<span class="math inline">\(\epsilon\)</span>的转移.</p>
-<p>设<span class="math inline">\(w=w_1w_2\cdots w_n\)</span>是一个字符串,如果在其中插入一些<span class="math inline">\(\epsilon\)</span>得到<span class="math inline">\(w=v_1v_2\cdots v_m\)</span>,并且存在一系列状态<span class="math inline">\(r_0,r_1,\cdots,r_m\)</span>使得<span class="math inline">\(r_0=q_0\)</span>,<span class="math inline">\(r_{i+1}\in\delta(r_i,v_{i+1})\)</span>,<span class="math inline">\(r_m\in F\)</span>,则称<span class="math inline">\(w\)</span>被NFA<span class="math inline">\(N\)</span>所接受.NFA<span class="math inline">\(N\)</span>所接受的全体字符串<span class="math inline">\(L(M)=\\{w\mid N接受w\\}\)</span>称为<span class="math inline">\(N\)</span>所接受的语言.</p>
-<p>NFA与DFA是相互等价的.要证明这一点,只需要证明任意NFA都有等价的DFA(即能够接受相同的语言).首先对任意的NFA,改变其转移函数为<span class="math inline">\(\delta&#39;(r,a)=\\{(r&#39;,a)\mid 从\delta(r,a)出发经过若干次\epsilon转移可以到达r&#39;\\}\)</span>,这样就消去了NFA中所有的<span class="math inline">\(\epsilon\)</span>转移. 其次对没有<span class="math inline">\(\epsilon\)</span>转移的NFA,以其状态集<span class="math inline">\(Q\)</span>的子集<span class="math inline">\(\mathcal{P}(Q)\)</span>为新的状态集,子集<span class="math inline">\(R\subseteq\mathcal{P}(Q)\)</span>的状态转移为<span class="math inline">\(\delta&#39;&#39; (R,a)=\cup_{r\in R}{\delta&#39;(r,a)}\)</span>,从而构造出一个DFA.可以看出NFA与这个DFA是等价的.</p>
-<p>通过"并联"和"串联"两个NFA,可以证明正则语言的并和连接依然是正则语言;通过连接接受状态到初始状态构造NFA,可以证明正则语言的星运算依然是正则语言.</p>
-<h2 id="正则表达式">正则表达式</h2>
-<p>从字母,<span class="math inline">\(\epsilon\)</span>,<span class="math inline">\(\emptyset\)</span>出发经过有限次正则运算得到的表达式称为正则表达式.</p>
-<p>正则表达式与DFA等价(也与正则语言等价).这是因为,一方面可以构造接受字母,<span class="math inline">\(\epsilon\)</span>,<span class="math inline">\(\emptyset\)</span>的NFA,再由正则运算的封闭性可知,任意正则表达式可由NFA接受,亦可由DFA接受;另一方面,设有一个DFA,把转移的字母变为正则表达式得到一个推广的自动机GNFA,对GNFA的状态个数归纳可以构造出DFA接受的正则表达式.(这部分过程比较复杂;此外另一个方向也有一种直接的证明,通过归纳构造从状态i到j且经过的状态编号不超过k的所有字符串对应的正则表达式,可见Hopcroft的书)</p>
-<h2 id="非正则语言">非正则语言</h2>
-<p>对于正则语言,有如下的泵引理:对任一正则语言<span class="math inline">\(A\)</span>,存在一个整数<span class="math inline">\(p\)</span>使得对任何<span class="math inline">\(A\)</span>中的字符串<span class="math inline">\(\mid s\mid\ge p\)</span>,<span class="math inline">\(s\)</span>可以被分为<span class="math inline">\(s=xyz\)</span>使得:1.对任何非负整数<span class="math inline">\(i\)</span>,<span class="math inline">\(xy^iz\)</span>属于<span class="math inline">\(A\)</span>; 2.<span class="math inline">\(\mid y\mid &gt;0\)</span>; 3.<span class="math inline">\(\mid xy\mid\le p\)</span>.</p>
-<p>这个引理成立的原因在于,若<span class="math inline">\(A\)</span>对应的DFA有<span class="math inline">\(p\)</span>个状态,那么对于长度大于等于<span class="math inline">\(p\)</span>的字符串<span class="math inline">\(s\)</span>,它必然经过<span class="math inline">\(p+1\)</span>个状态,由抽屉原理必然经过两个相同的状态;根据这两个相同的状态将<span class="math inline">\(s\)</span>分为三个部分,几个性质即可得证.</p>
-<p>泵引理主要用于证明一些语言不是正则语言.</p>
-<h1 id="第2章-上下文无关语言">第2章 上下文无关语言</h1>
-<h2 id="上下文无关文法">上下文无关文法</h2>
-<p>上下文无关文法(CFG)是一个四元组<span class="math inline">\(G=(V,\Sigma,R,S)\)</span>,其中<span class="math inline">\(V\)</span>为变量集,<span class="math inline">\(\Sigma\)</span>为(终结)符号集,<span class="math inline">\(R\)</span>为规则集合(每条规则包括一个变量和一个由变量和符号组成的字符串,即<span class="math inline">\(R\subseteq V\times (V\cup\Sigma)^*\)</span>,一般写成<span class="math inline">\(A\to w\)</span>的形式),<span class="math inline">\(S\in V\)</span>为初始变量. 如果有多个规则从同一个变量<span class="math inline">\(A\)</span>导出多个字符串<span class="math inline">\(w_1,\cdots,w_n\)</span>,那么通常简写为<span class="math inline">\(A\to w_1|\cdots|w_n\)</span>.</p>
-<p>对于两个由变量和符号组成的字符串<span class="math inline">\(u,v\)</span>,如果<span class="math inline">\(A\to w\)</span>是一条规则,将<span class="math inline">\(u\)</span>中的某一个<span class="math inline">\(A\)</span>替换为<span class="math inline">\(w\)</span>即得到字符串<span class="math inline">\(v\)</span>,那么称<span class="math inline">\(u\)</span>派生<span class="math inline">\(v\)</span>,记作<span class="math inline">\(u\implies v\)</span>. 由初始变量派生的仅含符号的字符串全体称为CFG<span class="math inline">\(G\)</span>派生的语言,由某个CFG派生的语言称为上下文无关语言(CFL).</p>
-<p>任何正则语言都是CFL.这是因为正则语言对应DFA,将DFA的每个状态对应一个变量,根据转移函数和起始/接受状态就能得到一个CFG.</p>
-<p>如果在派生某个字符串<span class="math inline">\(w\)</span>的过程中,总是替换最左边的变量,则称这样的派生是最左派生;具有两个不同的最左派生的字符串被称作被有歧义地派生(derived ambiguously).存在某个有歧义地派生的字符串的CFG被称为有歧义的文法.仅能由有歧义的CFG派生的CFL被称为内在歧义的语言.这样的语言是存在的.</p>
-<p>如果CFG<span class="math inline">\(G\)</span>的每条规则形如<span class="math inline">\(A\to BC\)</span>(<span class="math inline">\(B\)</span>,<span class="math inline">\(C\)</span>均为非初始的变量)或者<span class="math inline">\(A\to a\)</span>(a为某个符号),那么这样的CFG被称为Chomsky标准文法.任何一个CFL均可由某个Chomsky标准文法派生.这是因为,首先添加一个新的初始变量使得后续不会出现初始变量;接着通过添加规则的方式可以消去所有派生出<span class="math inline">\(\epsilon\)</span>的规则;然后通过替换的方式可以消去所有只派生一个变量的规则;最后对于剩下的规则,通过两两合并的方式可以转换为标准文法的规则(变量对应第一种规则,符号先变成变量再对应第二种规则).</p>
-<h2 id="下推自动机">下推自动机</h2>
-<p>下推自动机(PDA)是一个六元组<span class="math inline">\(M=(Q,\Sigma,\Gamma,\delta,q_0,F)\)</span>,其中<span class="math inline">\(Q\)</span>为状态集合,<span class="math inline">\(\Sigma\)</span>为输入符号集合,<span class="math inline">\(\Gamma\)</span>为栈符号集合,<span class="math inline">\(\delta:Q\times(\Sigma\cup\epsilon)\times(\Gamma\cup\epsilon)\to\mathcal{P}(Q\times(\Gamma\cup\epsilon))\)</span>为转移函数,<span class="math inline">\(q_0\in Q\)</span>为初始状态,<span class="math inline">\(F\subseteq Q\)</span>为接受状态集合.</p>
-<p>设<span class="math inline">\(w=w_1w_2\cdots w_n,w_i\in(\Sigma\cup\epsilon)\)</span>是输入序列,如果存在一系列状态<span class="math inline">\(r_0,r_1,\cdots,r_n\in Q\)</span>和栈序列<span class="math inline">\(s_0,s_1,...,s_n\in\Gamma^*\)</span>,使得<span class="math inline">\(r_0=q_0,s_0=\epsilon\)</span>,<span class="math inline">\((r_{i+1},b)\in\delta(r_i,w_{i+1},a)\)</span>其中<span class="math inline">\(s_i=at,s_{i+1}=bt\)</span>,并且<span class="math inline">\(r_n\in F\)</span>,则称<span class="math inline">\(w\)</span>被PDA<span class="math inline">\(M\)</span>接受.<span class="math inline">\(M\)</span>所接受的所有字符串构成<span class="math inline">\(M\)</span>所接受的语言.</p>
-<p>可以看到PDA和NFA的不同主要在于PDA具有一个栈,以及出栈入栈的能力. 此外,PDA本身的机制并不能给栈初始化,转移时多个字符入栈,判断栈空或是判断输入结束;但是通过适当添加符号和状态,即可实现这些功能.</p>
-<p>PDA与CFG等价.这是因为,一方面对于任一CFG派生出的CFL,我们构造状态使得:如果输入和栈顶都为某个符号,则该符号可以出栈;如果输入为<span class="math inline">\(\epsilon\)</span>而栈顶为某个变量,则可以按照CFG的规则将该变量出栈,由规则派生的字符串入栈.当栈空时即接受输入.这样构造出的PDA可以接受该语言. 另一方面,对于任意PDA,不妨设它只有一个接受状态,接受前栈为空,且每次转移要么只出栈要么只入栈.以输入符号为文法的符号,且对于每对状态<span class="math inline">\((p,q)\)</span>构造变量<span class="math inline">\(A_{pq}\)</span>.建立三种规则:如果从状态<span class="math inline">\(p\)</span>输入<span class="math inline">\(a\)</span>并入栈<span class="math inline">\(u\)</span>可以转移至<span class="math inline">\(r\)</span>,并且从状态<span class="math inline">\(s\)</span>输入<span class="math inline">\(b\)</span>并出栈<span class="math inline">\(u\)</span>可以转移至<span class="math inline">\(q\)</span>,那么建立规则<span class="math inline">\(A_{pq}\to aA_{rs}b\)</span>;对于任意状态<span class="math inline">\(p,q,r\)</span>,建立规则<span class="math inline">\(A_{pq}\to A_{pr}A_{rq}\)</span>;最后建立规则<span class="math inline">\(A_{pp}\to\epsilon\)</span>.可以证明,这样构造的<span class="math inline">\(A_{pq}\)</span>生成的字符串对应所有从状态<span class="math inline">\(p\)</span>和空栈出发能够转移至状态<span class="math inline">\(q\)</span>和空栈的输入符号串.这样,以初始状态和接受状态构造的变量<span class="math inline">\(A_{q_0q}\)</span>为初始变量即得等价的CFG.</p>
-<h2 id="非上下文无关语言">非上下文无关语言</h2>
-<p>CFL也有泵引理,其内容为:设<span class="math inline">\(A\)</span>为CFL,则存在一个正整数<span class="math inline">\(p\)</span>使得,只要<span class="math inline">\(A\)</span>中的字符串<span class="math inline">\(s\)</span>满足<span class="math inline">\(\mid s\mid\ge p\)</span>,那么可以将其分为五部分<span class="math inline">\(s=uvxyz\)</span>,使得:1.对任意非负整数<span class="math inline">\(i\)</span>,<span class="math inline">\(uv^ixy^iz\)</span>属于<span class="math inline">\(A\)</span>;2.<span class="math inline">\(\mid vy\mid &gt;0\)</span>;3.<span class="math inline">\(\mid vxy\mid\le p\)</span>.</p>
-<p>要证明它,只需要注意<span class="math inline">\(A\)</span>的CFG中变量的个数有限.当<span class="math inline">\(s\)</span>的长度充分长时,考虑从起始变量出发得到<span class="math inline">\(s\)</span>的解析树,这个树足够深,于是根据抽屉原理,从根到某个叶子上必然经过两个相同的变量.根据这两个重复变量生成的子树,可以将<span class="math inline">\(s\)</span>分成五个部分,再注意到用相同变量生成的子树替换后仍为合法的字符串,三个性质即可得证.</p>
-<p>这个引理也可以被用来证明一些语言不是CFL.</p>
-<h2 id="确定性上下文无关语言">确定性上下文无关语言</h2>
-<p>(这一节的内容比较难,所以我只是粗略的看了一部分)</p>
-<p>与(非确定性)下推自动机相比,确定性下推自动机(DPDA)允许了<span class="math inline">\(\epsilon\)</span>转移的存在,但对于每个状态,输入和栈,要求至多转移转移到一个状态(也允许不转移);并且输入为<span class="math inline">\(a\)</span>或<span class="math inline">\(\epsilon\)</span>,栈顶为<span class="math inline">\(x\)</span>或<span class="math inline">\(\epsilon\)</span>时,四种情况必须有一种可以转移.DPDA接受的语言称为确定性上下文无关语言(DCFL). DCFL对补预算封闭,由此可以得到是CFL但不是DCFL的语言存在.</p>
-<p>对应也有确定性上下文无关文法(DCFG),主要是在CFG的基础上要求每个字符串倒推回起始变量的过程具有唯一性.具体地说,如果字符串<span class="math inline">\(u\)</span>中的某一字串<span class="math inline">\(h\)</span>可以按照规则<span class="math inline">\(T\to h\)</span>倒推,那么称<span class="math inline">\(h\)</span>是<span class="math inline">\(u\)</span>的一个句柄(handle);如果<span class="math inline">\(h\)</span>是<span class="math inline">\(v=xhy\)</span>的句柄并且对任何<span class="math inline">\(\hat{y}\)</span>,<span class="math inline">\(h\)</span>都是<span class="math inline">\(xh\hat{y}\)</span>中的唯一句柄,则称<span class="math inline">\(h\)</span>是<span class="math inline">\(v\)</span>的强迫句柄(forced handle);如果每个合法字符串都有一个强迫句柄则称该文法为DCFG.判断一个CFG是否为DCFG有一个测试方法叫做DK测试.事实上,DCFG和DPDA是等价的.</p>
-<h1 id="第3章-church-turing论题">第3章 Church-Turing论题</h1>
-<h2 id="图灵机">图灵机</h2>
-<p>图灵机(TM)是一个七元组<span class="math inline">\(M=(Q,\Sigma,\Gamma,\delta,q_0,q_{accept},q_{reject})\)</span>,其中<span class="math inline">\(Q\)</span>是状态集合,<span class="math inline">\(\Sigma\)</span>是输入符号集合(不包含空符号),<span class="math inline">\(\Gamma\)</span>为纸带符号集合(包含空符号和<span class="math inline">\(\Sigma\)</span>),$:QQ\{ L,R \} <span class="math inline">\(为转移函数,\)</span>q_0Q<span class="math inline">\(为初始状态,\)</span>q_{accept}Q<span class="math inline">\(为接受状态,\)</span>q_{reject}Q$为拒绝状态.</p>
-<p>图灵机在工作时包括三个要素:状态,纸带内容,纸带头位置,它们合起来叫做图灵机的一个配置(configuration),可以用<span class="math inline">\(u\,q\,v\)</span>表示纸带内容为<span class="math inline">\(uv\)</span>,状态为<span class="math inline">\(q\)</span>且纸带头指向<span class="math inline">\(v\)</span>的第一个字符.配置的转移方式是:如果<span class="math inline">\(\delta(q_i,b)=(q_j,c,L)\)</span>,那么<span class="math inline">\(ua\,q_i\,bv\)</span>可以转移到<span class="math inline">\(u\,q_j\,abv\)</span>;如果<span class="math inline">\(\delta(q_i,b)=(q_j,c,R)\)</span>,那么<span class="math inline">\(ua\,q_i\,bv\)</span>可以转移到<span class="math inline">\(uab\,q_i\,v\)</span>.一个例外是在纸带最左端向左移动,纸带头位置不变.</p>
-<p>当输入字符串<span class="math inline">\(w\)</span>时,图灵机以<span class="math inline">\(q_0\,w\)</span>为初始配置.如果经过有限次转移后图灵机进入<span class="math inline">\(q_{accept}\)</span>,则称该图灵机接受(识别)该字符串;该图灵机接受的全体字符串称为该图灵机接受的语言;被某个图灵机接受的语言称为图灵可识别语言(Turing-recognizable,或称递归可枚举语言).如果该图灵机对于任意输入,经过有限次转移后总是进入<span class="math inline">\(q_{accept}\)</span>或是<span class="math inline">\(q_{reject}\)</span>,则称该图灵机是判定机(decider);判定机识别的语言称为被该图灵机所判定的语言;被某个图灵机判定的语言称为图灵可判定语言(Turing-decidable,或称递归语言).</p>
-<h2 id="图灵机的变种">图灵机的变种</h2>
-<p>给图灵机添加多个纸带即得到多纸带图灵机,它能够在多个纸带上同时修改,并且具有多个纸带头.多纸带图灵机的运算能力与图灵机等价,因为我们可以通过给不同纸带的字符串之间插入分隔符#的方式用单纸带模拟多纸带,并通过在符号上添加点(可以理解为替换成对应符号)表示多个纸带头的位置,当修改到多纸带上的空字符时将对应单纸带上的内容平移.</p>
-<p>允许图灵机转移至多个状态即得到非确定性图灵机.非确定性图灵机的运算能力与图灵机等价,因为我们可以将非确定性图灵机的运行看作一棵树,对这棵树做BFS即可模拟非确定性图灵机.</p>
-<h2 id="算法的定义">算法的定义</h2>
-<p>算法并没有一个严格的定义.Church-Turing论题认为,直观上的算法和图灵机所实现的算法是等价的.</p>
-<h1 id="第4章-可判定性">第4章 可判定性</h1>
-<h2 id="可判定语言">可判定语言</h2>
-<p>语言<span class="math inline">\(A_{DFA}=\\{(B,w)\mid B是某个接受字符串w的DFA\\}\)</span>是可判定的,因为我们可以用图灵机模拟DFA的运行.语言<span class="math inline">\(A_{NFA}=\\{(B,w)\mid B是某个接受字符串w的NFA\\}\)</span>和<span class="math inline">\(A_{REX}=\\{(R,w)\mid R是某个生成字符串w的正则表达式\\}\)</span>也是可判定的,因为我们可以将NFA和正则表达式转化为DFA.</p>
-<p>语言<span class="math inline">\(E_{DFA}=\\{A\mid A是一个DFA,且L(A)=\emptyset \\}\)</span>是可判定的,因为我们可以用图灵机对DFA遍历(搜索)其所有可能到达的状态,接受状态是否在其中就决定了这个DFA的语言是否为空.语言<span class="math inline">\(EQ_{DFA}=\\{(A,B)\mid A,B是DFA,且L(A)=L(B)\\}\)</span>是可判定的,因为我们可以构造<span class="math inline">\(L(A),L(B)\)</span>的对称差,因为正则语言对补交并封闭所以对称差是某个DFA的语言<span class="math inline">\(L(C)\)</span>,因而可用<span class="math inline">\(E_{DFA}\)</span>来判定相等.</p>
-<p>语言<span class="math inline">\(A_{CFG}=\\{(G,w)\mid G是某个派生字符串w的CFG\\}\)</span>是可判定的,因为我们可以将<span class="math inline">\(G\)</span>转换为Chomsky标准文法,而它派生一个长度为n的字符串恰好要替换2n-1次,所以可以通过搜索判定<span class="math inline">\(A_{CFG}\)</span>.语言<span class="math inline">\(E_{CFG}=\\{G\mid G是某个CFG且L(G)=\emptyset\\}\)</span>是可判定的,因为我们可以从终结字符出发搜索确定每个变量是否能够派生出仅终结字符的字符串,进而判定<span class="math inline">\(G\)</span>是否能派生出仅终结字符的字符串.</p>
-<p>此外,任何CFL都是可判定的.这是因为我们可以直接利用<span class="math inline">\(A_{CFG}\)</span>来判定某个字符串是否合法.</p>
-<h2 id="不可判定性">不可判定性</h2>
-<p>图灵不可识别语言必定存在,因为图灵机全体构成可数集而语言全体构成不可数集.</p>
-<p>语言<span class="math inline">\(A_{TM}=\\{(M,w)\mid M是接受字符串w的图灵机\\}\)</span>是图灵不可判定的.这是因为如果它可判定,设判定它的图灵机为<span class="math inline">\(H\)</span>,那么可以构造图灵机<span class="math inline">\(D\)</span>,输入一个图灵机<span class="math inline">\(M\)</span>的编码,如果<span class="math inline">\(M\)</span>接受<span class="math inline">\(M\)</span>的编码那么<span class="math inline">\(D\)</span>拒绝<span class="math inline">\(M\)</span>的编码,反之接受.不论<span class="math inline">\(D\)</span>接受还是拒绝<span class="math inline">\(D\)</span>自身的编码,都会产生矛盾.</p>
-<p>一个语言是图灵可判定的当且仅当它和它的补都是图灵可识别的.这是因为一方面如果它是图灵可判定的那它和它的补显然是图灵可识别的;反过来如果它和它的补都是图灵可识别的,那么我们可以构造一个图灵机来并行地判定它和它的补是否可识别,当其中一个停机时即判定成功.因为<span class="math inline">\(A_{TM}\)</span>是图灵可识别的所以它的补是图灵不可识别语言.</p>
-<h1 id="第5章-可归约性">第5章 可归约性</h1>
-<p>可归约性可以用来证明不可判定性.如果某个问题A与问题B之间具有这样的性质:若找到了B的解决方法,那么A也能解决,那么(不严格地)就称A可以归约到B.可见如果A是不可判定的,那么B也是不可判定的.</p>
-<h2 id="语言中的不可判定问题">语言中的不可判定问题</h2>
-<h3 id="几个不可判定问题">几个不可判定问题</h3>
-<p>停机问题<span class="math inline">\(HALT_{TM}=\\{(M,w)\mid M在输入w下停机\\}\)</span>不可判定.这是因为,如果它可判定,我们可以构造一个图灵机用于判定<span class="math inline">\(A_{TM}\)</span>:先判定是否停机,如果停机再对这个图灵机模拟.这说明<span class="math inline">\(A_{TM}\)</span>可归约到<span class="math inline">\(HALT_{TM}\)</span>,因此<span class="math inline">\(HALT_{TM}\)</span>不可判定.</p>
-<p>语言<span class="math inline">\(E_{TM}=\\{M\mid M是一个图灵机且L(M)=\emptyset\\}\)</span>不可判定.这是因为,如果它可判定,对于任一图灵机<span class="math inline">\(M\)</span>和输入<span class="math inline">\(w\)</span>,我们构造图灵机<span class="math inline">\(M_1\)</span>使得:若输入为<span class="math inline">\(w\)</span>则由<span class="math inline">\(M\)</span>处理,否则拒绝,于是判定<span class="math inline">\(L(M_1)\)</span>是否为空就能判定<span class="math inline">\(M\)</span>是否接受<span class="math inline">\(w\)</span>.这说明<span class="math inline">\(A_{TM}\)</span>可归约到<span class="math inline">\(E_{TM}\)</span>,因此<span class="math inline">\(E_{TM}\)</span>不可判定.</p>
-<p>语言<span class="math inline">\(REGULAR_{TM}=\\{M\mid M是一个图灵机且L(M)是正则语言\\}\)</span>不可判定.这是因为,如果它可判定,对于任一图灵机<span class="math inline">\(M\)</span>和输入<span class="math inline">\(w\)</span>,我们选取一个非正则语言,并构造图灵机<span class="math inline">\(M_2\)</span>使得:若输入为该非正则语言则接受;否则让<span class="math inline">\(M\)</span>处理<span class="math inline">\(w\)</span>,若<span class="math inline">\(M\)</span>接受<span class="math inline">\(w\)</span>则<span class="math inline">\(M_2\)</span>接受输入,于是判定<span class="math inline">\(L(M_2)\)</span>是否正则就能判定<span class="math inline">\(M\)</span>是否接受<span class="math inline">\(w\)</span>.这说明<span class="math inline">\(A_{TM}\)</span>可归约到<span class="math inline">\(REGULAR_{TM}\)</span>,因此<span class="math inline">\(REGULAR_{TM}\)</span>不可判定.</p>
-<p>语言<span class="math inline">\(EQ_{TM}=\\{(M_1,M_2)\mid L(M_1)=L(M_2)\\}\)</span>不可判定.这是因为,如果它可判定,对于任一图灵机<span class="math inline">\(M\)</span>,我们判定它与拒绝所有输入的图灵机是否等价,那么就能判定<span class="math inline">\(L(M)\)</span>是否为空.这说明<span class="math inline">\(EQ_{TM}\)</span>可归约到<span class="math inline">\(E_{TM}\)</span>,因此<span class="math inline">\(E_{TM}\)</span>不可判定.</p>
-<h3 id="计算历史方法">计算历史方法</h3>
-<p>计算历史就是图灵机在状态转移时构成的配置的序列.线性有界自动机(LBA)是要求纸带头不能超出输入部分的范围的图灵机.</p>
-<p>语言<span class="math inline">\(A_{LBA}=\\{(M,w)\mid M是接受输入w的LBA\\}\)</span>是可判定的.这是因为字母个数有限,因而LBA的可能配置个数是有限的,图灵机只需要模拟有限步即可做出判定.</p>
-<p>语言<span class="math inline">\(E_{LBA}=\\{M\mid M是一个LBA且L(M)=\emptyset\\}\)</span>不可判定.这是因为,如果它可判定,对于任一图灵机<span class="math inline">\(M\)</span>和输入<span class="math inline">\(w\)</span>,构造一个LBA<span class="math inline">\(B\)</span>,它接受输入<span class="math inline">\(x\)</span>当且仅当<span class="math inline">\(x\)</span>是<span class="math inline">\(M\)</span>接受<span class="math inline">\(w\)</span>的一个计算历史.由于只需要检查起始和结束的配置以及相邻的配置是否符合要求,所以纸带头不需要超出输入部分.判断<span class="math inline">\(B\)</span>是否为空即可判定<span class="math inline">\(M\)</span>是否接受<span class="math inline">\(w\)</span>.这说明<span class="math inline">\(A_{TM}\)</span>可归约到<span class="math inline">\(E_{LBA}\)</span>,因此<span class="math inline">\(E_{LBA}\)</span>不可判定.</p>
-<p>语言<span class="math inline">\(ALL_{CFG}=\\{G\mid G是一个CFG且L(G)为全集\\}\)</span>不可判定.这是因为,如果它可判定,对于任一图灵机<span class="math inline">\(M\)</span>和输入<span class="math inline">\(w\)</span>,构造一个PDA<span class="math inline">\(D\)</span>,它输入<span class="math inline">\(M\)</span>的一个计算历史,如果三种情况之一发生就拒绝输入(要用非确定性并行地检测):1.第一个配置不是输入<span class="math inline">\(w\)</span>的配置;2.最后一个配置不是处于接收状态;3.其中某个转移不是合法的转移.此外为了便于检查第三种情况,需要调整输入的顺序使得相邻的两个配置的方向恰好相反.</p>
-<h2 id="一个简单的不可判定问题">一个简单的不可判定问题</h2>
-<p>波斯特对应问题(PCP)是指给定一组两两配对的字符串,判定能否(可重复地)选出一些配对排列起来,使得被配对的双方分别拼成两个相同的字符串.PCP是不可判定的.证明的细节比较繁琐,大概思路是先转化为对第一个配对有要求的MPCP,假设MPCP可判定,对于任一图灵机<span class="math inline">\(M\)</span>和输入<span class="math inline">\(w\)</span>,如果某个配置可以转移到另一个配置就将其配对起来,由MPCP取出这样的配对序列,从而得到一个<span class="math inline">\(M\)</span>接受<span class="math inline">\(w\)</span>的状态序列,于是<span class="math inline">\(A_{TM}\)</span>可归约到PCP.</p>
-<h2 id="映射不可规约性">映射不可规约性</h2>
-<p>如果存在一个图灵机<span class="math inline">\(M\)</span>,如果输入<span class="math inline">\(w\)</span>,那么<span class="math inline">\(M\)</span>以纸带内容<span class="math inline">\(f(w)\)</span>停机,则称<span class="math inline">\(f\)</span>是可计算函数. 如果存在可计算函数<span class="math inline">\(f\)</span>,使得对任意<span class="math inline">\(w\)</span>,<span class="math inline">\(w\in A\)</span>当且仅当<span class="math inline">\(f(w)\in B\)</span>,则称语言<span class="math inline">\(A\)</span>通过映射可归约到<span class="math inline">\(B\)</span>,记作<span class="math inline">\(A\le_mB\)</span>,<span class="math inline">\(f\)</span>称作<span class="math inline">\(A\)</span>到<span class="math inline">\(B\)</span>的规约.</p>
-<p>可归约性有这样的性质:如果<span class="math inline">\(A\le_mB\)</span>,<span class="math inline">\(B\)</span>可判定,则<span class="math inline">\(A\)</span>可判定;如果<span class="math inline">\(A\le_mB\)</span>,<span class="math inline">\(A\)</span>不可判定,则<span class="math inline">\(B\)</span>不可判定.此外,如果<span class="math inline">\(A\le_mB\)</span>,<span class="math inline">\(B\)</span>图灵可识别,则<span class="math inline">\(A\)</span>图灵可识别.由此可以证明<span class="math inline">\(EQ_{TM}\)</span>和它的补都是图灵不可识别的.</p>
-<h1 id="第6章-可计算性高级专题">第6章 可计算性高级专题</h1>
-<h2 id="递归定理">递归定理</h2>
-<p>递归定理说的是，如果<span class="math inline">\(T\)</span>是一个二元计算函数<span class="math inline">\(t\)</span>的图灵机,那么存在一个一元计算函数<span class="math inline">\(r\)</span>的图灵机<span class="math inline">\(R\)</span>,使得对任意的字符串<span class="math inline">\(w\)</span>都有<span class="math inline">\(r(w)=t(R,w)\)</span>.它体现了机器具有自指的能力. 为了证明这个定理,需要构造两个图灵机<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>:<span class="math inline">\(B\)</span>输入一个字符串,构造一个可以输出该字符串的图灵机,将其编码并和输入的字符串连接起来输出.<span class="math inline">\(A\)</span>无输入而输出<span class="math inline">\(BT\)</span>的编码.最后将<span class="math inline">\(ABT\)</span>连接起来作为<span class="math inline">\(R\)</span>,此时的<span class="math inline">\(R\)</span>接受字符串<span class="math inline">\(w\)</span>,<span class="math inline">\(w\)</span>和<span class="math inline">\(B\)</span>的输出<span class="math inline">\(ABT=R\)</span>作为<span class="math inline">\(T\)</span>的输入,<span class="math inline">\(T\)</span>的输出又作为<span class="math inline">\(R\)</span>的输出,这就得到了<span class="math inline">\(r(w)=t(R,w)\)</span>.</p>
-<p>递归定理使得我们在构造图灵机时可以直接利用它自身的编码.作为其应用,语言<span class="math inline">\(MIN_{TM}=\\{M\mid M是图灵机,且不存在和M等价的比M描述更短的图灵机\\}\)</span>不可判定;任何可计算一元函数<span class="math inline">\(t\)</span>都有不动点,即存在图灵机<span class="math inline">\(R\)</span>使得<span class="math inline">\(t(R)=R\)</span>.</p>
-<h2 id="逻辑理论的可归约性">逻辑理论的可归约性</h2>
-<p>若只使用加法,则自然数上所有真命题(这里要求是前束的闭式)的集合<span class="math inline">\(Th(\mathbb{N},+)\)</span>可判定.而若使用加法和乘法,则<span class="math inline">\(Th(\mathbb{N},+,\times)\)</span>不可判定.进一步地我们还能证明Godel不完备性定理.</p>
-<p>(这节的证明没怎么看懂,所以顺带后面两节我也跳了)</p>
-<h2 id="图灵可归约性">图灵可归约性</h2>
-<h2 id="信息的定义">信息的定义</h2>
-<h1 id="第7章-时间复杂度">第7章 时间复杂度</h1>
-<h2 id="测量复杂度">测量复杂度</h2>
-<p>设<span class="math inline">\(M\)</span>为图灵机,则<span class="math inline">\(M\)</span>的时间复杂度是一个函数<span class="math inline">\(f:\mathbb{N}\to\mathbb{N}\)</span>,使得当输入的长度为<span class="math inline">\(n\)</span>时,<span class="math inline">\(M\)</span>的运行步数最多为<span class="math inline">\(f(n)\)</span>.对于时间复杂度,我们可以使用微积分里的大O/小o记号.对于非确定性图灵机,其时间复杂度是每个分支中最多的运行步数.</p>
-<p>设<span class="math inline">\(t(n)\ge n\)</span>.任何时间复杂度为<span class="math inline">\(t(n)\)</span>的多纸带图灵机等价于时间复杂度为<span class="math inline">\(O(t^2(n))\)</span>的单纸带图灵机;这是因为多纸带图灵机每执行一步,对应单纸带图灵机至多执行<span class="math inline">\(O(t(n))\)</span>步.并且,任何时间复杂度为<span class="math inline">\(t(n)\)</span>的非确定性图灵机等价于时间复杂度为<span class="math inline">\(2^{O(t^2(n))}\)</span>的确定性图灵机;这是因为非确定性图灵机的分支个数至多为指数增长.</p>
-<h2 id="p类问题">P类问题</h2>
-<p>P是所有能被(单纸带确定性)图灵机以多项式时间(<span class="math inline">\(O(n^k)\)</span>)判定的语言组成的类.P类问题在多项式等价(即一个图灵机以多项式的时间增长为代价模拟另一个图灵机)下等价;P类问题往往代表现实中计算机可解的问题.</p>
-<p>P类问题的例子包括:判定两点之间是否联通的问题<span class="math inline">\(PATH\)</span>,判定两个数是否互素的问题<span class="math inline">\(RELPRIME\)</span>,任一上下文无关语言(将其CFG转换为Chomsky标准文法,然后用动态规划判定).</p>
-<h2 id="np类问题">NP类问题</h2>
-<p>NP是所有可被多项式时间下验证(即存在一个图灵机<span class="math inline">\(V\)</span>,使得该语言<span class="math inline">\(A=\\{w\mid 存在某个字符串c,使得V接受(w,c)\\}\)</span>,且图灵机<span class="math inline">\(V\)</span>相对于<span class="math inline">\(w\)</span>的时间复杂度为多项式时间)的语言组成的类;同时也是所有可被某个非确定性图灵机在多项式时间下判定的语言组成的类.</p>
-<p>NP类问题的例子包括:判定图中是否存在k-完全子图的问题<span class="math inline">\(CLIQUE\)</span>,判定给定若干数中是否可以选出一些数使得其和等于给定的t的问题<span class="math inline">\(SUBSET-SUM\)</span>.</p>
-<h2 id="np完全">NP完全</h2>
-<h3 id="多项式时间规约np完全">多项式时间规约,NP完全</h3>
-<p>如果存在一个图灵机<span class="math inline">\(M\)</span>,使得它输入<span class="math inline">\(w\)</span>时在多项式时间内停机且输出<span class="math inline">\(f(w)\)</span>,那么称<span class="math inline">\(f\)</span>是多项式时间可计算函数. 如果存在一个多项式时间可计算函数<span class="math inline">\(f\)</span>使得对任意<span class="math inline">\(w\)</span>,<span class="math inline">\(w\in A\)</span>当且仅当<span class="math inline">\(f(w)\in B\)</span>,则称语言<span class="math inline">\(A\)</span>多项式时间下可规约到语言<span class="math inline">\(B\)</span>,记作<span class="math inline">\(A\le_PB\)</span>.</p>
-<p>如果<span class="math inline">\(A\le_PB\)</span>,并且<span class="math inline">\(B\in P\)</span>,那么<span class="math inline">\(A\in P\)</span>.</p>
-<p>一个语言<span class="math inline">\(B\)</span>,如果<span class="math inline">\(B\in NP\)</span>,并且对任意的<span class="math inline">\(A\in NP\)</span>,都有<span class="math inline">\(A\le_PB\)</span>,那么就称<span class="math inline">\(B\)</span>是NP完全(NPC)的.NP语言具有这样的性质:如果<span class="math inline">\(B\)</span>是NP完全的,且<span class="math inline">\(B\le_PC\)</span>,那么<span class="math inline">\(C\)</span>也是NP完全的.</p>
-<p>去掉<span class="math inline">\(B\in NP\)</span>的条件,就称<span class="math inline">\(B\)</span>是NP难的.</p>
-<h3 id="cook-levin定理">Cook-Levin定理</h3>
-<p>判定某个命题逻辑的公式能否在某个个体变元指派下为真(即判定该公式是否可满足)的问题叫做可满足性问题,记作<span class="math inline">\(SAT\)</span>.Cook-Levin定理说的是<span class="math inline">\(SAT\in NPC\)</span>. 证明的思路在于,首先<span class="math inline">\(SAT\in NP\)</span>显然;其次若<span class="math inline">\(A\in NP\)</span>,把<span class="math inline">\(A\)</span>输入<span class="math inline">\(w\)</span>后从起始到接受的那个分支的配置排成一列得到一个表格,然后根据表格上某个位置是否为某个字符得出若干个体变元,根据转移合法性的要求列出一个可满足的公式.这个公式生成的时间是多项式的,所以<span class="math inline">\(A\le_PSAT\)</span>.</p>
-<p>此外,如果要判定的公式是一个每一析取项仅由三个变元组成的合取范式,那么就得到<span class="math inline">\(3SAT\)</span>问题.<span class="math inline">\(3SAT\in NPC\)</span>,因为对于任意<span class="math inline">\(SAT\)</span>中的公式,我们总可以先转化为合取范式,并且对于多于三个变元的析取项,我们总是可以利用<span class="math inline">\(a_1\vee a_2\vee a_3\vee a_4=(a_1\vee a_2\vee z)\wedge(a_3\vee a_4\vee\bar{z})\)</span>来转化成三个变元的.因此<span class="math inline">\(SAT\le_P3SAT\)</span>.</p>
-<h3 id="其他的np完全问题">其他的NP完全问题</h3>
-<p><span class="math inline">\(CLIQUE\in NPC\)</span>.这是因为给定一个<span class="math inline">\(3SAT\)</span>中的公式,我们以每个析取项的三个变量为顶点,将不同项之间没有互斥关系(即<span class="math inline">\(x\)</span>和<span class="math inline">\(\bar{x}\)</span>不能连接)的顶点连接起来,则判定此图有没有k-完全子图(这里k是析取项的个数)即可判定此公式是否可满足.</p>
-<p>判定图中是否存在覆盖所有边的顶点集的问题叫做顶覆盖问题,记作<span class="math inline">\(VERTEX-COVER\)</span>.<span class="math inline">\(VERTEX-COVER\in NPC\)</span>.这是因为给定一个<span class="math inline">\(3SAT\)</span>中的公式,将公式中的每个析取项作为三个相邻顶点,再为每个变量<span class="math inline">\(x\)</span>建立两个相邻顶点<span class="math inline">\(x\)</span>,<span class="math inline">\(\bar{x}\)</span>,最后将这些顶点与相同的析取项中的顶点连接.判定此图有没有顶覆盖即可判定此公式是否可满足.</p>
-<p>判定有向图中两顶之间是否存在Hamilton圈的问题记作<span class="math inline">\(HAMPATH\)</span>.<span class="math inline">\(HAMPATH\in NPC\)</span>.同样的,无向图版本的<span class="math inline">\(UHAMPATH\in NPC\)</span>.此外<span class="math inline">\(SUBSET-SUM\in NPC\)</span>.(这些的证明我跳过了)</p>
-<h1 id="第8章-空间复杂度">第8章 空间复杂度</h1>
-<p>设<span class="math inline">\(M\)</span>为图灵机,则<span class="math inline">\(M\)</span>的时间复杂度是一个函数<span class="math inline">\(f:\mathbb{N}\to\mathbb{N}\)</span>,使得当输入的长度为<span class="math inline">\(n\)</span>时,<span class="math inline">\(M\)</span>使用的纸带单元个数最多为<span class="math inline">\(f(n)\)</span>.对于非确定性图灵机,用某个分支上最多使用个数定义.</p>
-<h2 id="savitch定理">Savitch定理</h2>
-<p>Savitch定理说的是,设<span class="math inline">\(f(n)\ge n\)</span>,如果一个非确定性图灵机的空间复杂度为<span class="math inline">\(f(n)\)</span>,那么它等价于某个空间复杂度至多为<span class="math inline">\(O(f^2(n))\)</span>的确定性图灵机.这是因为从一个非确定性图灵机出发,我们可以采取二分递归搜索的方式确定从起始到结束是否能在至多<span class="math inline">\(2^{df(n)}\)</span>步内转移;因为搜索是递归的,所以可以重复利用同层的空间.</p>
-<h2 id="pspace类">PSPACE类</h2>
-<p>PSPACE类由所有具有多项式空间复杂度的语言组成.NPSPACE对应非确定性的情形;根据Savitch定理,<span class="math inline">\(PSPACE=NPSPACE\)</span>.</p>
-<h2 id="pspace完备">PSPACE完备</h2>
-<p>如果一个语言<span class="math inline">\(B\)</span>满足:1.<span class="math inline">\(B\in PSPACE\)</span>;2.对任何语言<span class="math inline">\(A\in PSPACE\)</span>,<span class="math inline">\(A\)</span>多项式时间可归约到<span class="math inline">\(B\)</span>.则称<span class="math inline">\(B\)</span>是PSPACE完备的.</p>
-<p>PSPACE完备的例子包括:判断一个前束闭式是否为真的问题TQBF,判断在给前束闭式中的变量赋值的游戏中是否存在必胜策略的问题FORMULA-GAME,推广的地理游戏(两个人轮流沿着图走,第一个走到重复顶点的人输)是否存在必胜策略的问题GG,</p>
-<h2 id="l和nl类">L和NL类</h2>
-<h2 id="nl完备">NL完备</h2>
-<h2 id="nlconl">NL=coNL</h2>
-<h1 id="第9章-难解性">第9章 难解性</h1>
-<h2 id="层次定理">层次定理</h2>
-<p>设<span class="math inline">\(f(n)\)</span>至少为<span class="math inline">\(O(n\log n)\)</span>.如果存在一个图灵机,输入<span class="math inline">\(n\)</span>个1能够输出<span class="math inline">\(f(n)\)</span>的二进制,且空间复杂度为<span class="math inline">\(O(f(n))\)</span>,则称<span class="math inline">\(f(n)\)</span>空间可构造.将空间换成时间就得到时间可构造.</p>
-<p>空间层次定理说的是对任何空间可构造的<span class="math inline">\(f\)</span>,存在某个语言<span class="math inline">\(A\)</span>,它能在<span class="math inline">\(O(f(n))\)</span>的空间复杂度下被判定,却不能在<span class="math inline">\(o(f(n))\)</span>的空间复杂度下被判定.大致思路是构造一个图灵机<span class="math inline">\(D\)</span>,它接受一个图灵机的编码,并限制在<span class="math inline">\(O(f(n))\)</span>的空间复杂度下模拟它,<span class="math inline">\(D\)</span>所识别的语言即为所求;但实际上还需要做一些技术上的改正.</p>
-<p>时间层次定理说的是对任何时间可构造的<span class="math inline">\(t\)</span>,存在某个语言<span class="math inline">\(A\)</span>,它能在<span class="math inline">\(O(t(n))\)</span>的时间复杂度下被判定,却不能在<span class="math inline">\(o(\frac{t(n)}{\log t(n)})\)</span>的时间复杂度下被判定.</p>
-<p>两个层次定理表明,随着时间/空间复杂度的增长,所能识别的语言是会不断扩大的.</p>
-<p>作为层次定理的应用,可以证明<span class="math inline">\(EQ_{REX\uparrow}=\\{(Q,R)\mid Q,R是等价的扩展正则表达式\\}\)</span>(这里扩展正则表达式是指加入了指数运算的正则表达式)是EXPSPACE完备的,因而在时间和空间上都不可能以多项式时间判定.</p>
-<h2 id="相对化">相对化</h2>
-<p>一个谕示是一个能够直接判定某个字符串是否属于某个语言<span class="math inline">\(A\)</span>的黑箱;带有谕示的黑箱的图灵机叫做谕示图灵机,记作<span class="math inline">\(M^A\)</span>.</p>
-<p>我们可以证明存在一个谕示<span class="math inline">\(A\)</span>使得<span class="math inline">\(P^A\neq NP^A\)</span>,又存在一个谕示<span class="math inline">\(B\)</span>使得<span class="math inline">\(P^B=NP^B\)</span>.</p>
-<h2 id="电路复杂性">电路复杂性</h2>
-<h1 id="第10章-计算复杂度理论高级专题">第10章 计算复杂度理论高级专题</h1>
-<h2 id="近似算法">近似算法</h2>
-<p>对于有些问题,求出最优解的算法是NP难的,此时也可以转而寻求不是最优的近似算法.如果某个算法的结果至少是最优算法的k倍(越低越优)或k分之一(越高越优),那么称该算法是k-最优的.</p>
-<p>例如,对于求最小顶覆盖的问题MIN-VERTEX-COVER,如果随意找一条未被覆盖的边并标记它的某个顶点,不断进行下去,就得到一个多项式时间的2-最优算法.又例如求最大割的问题MAX-CUT,如果不断找出移动后能使割的容量增大的顶点就调整该顶点,直到无法调整(贪心),就得到一个多项式时间的2-最优算法.</p>
-<h2 id="概率算法">概率算法</h2>
-<p>概率图灵机<span class="math inline">\(M\)</span>是某些步有两个合法的随机转移方向,并且有<span class="math inline">\(k\)</span>个随机转移的分支的概率为<span class="math inline">\(2^{-k}\)</span>.此时<span class="math inline">\(M\)</span>接受输入<span class="math inline">\(w\)</span>的概率为所有接受<span class="math inline">\(w\)</span>的分支的概率之和,拒绝<span class="math inline">\(w\)</span>的概率为<span class="math inline">\(1-Pr(M接受w)\)</span>.称<span class="math inline">\(M\)</span>以错误概率<span class="math inline">\(\epsilon\)</span>判定<span class="math inline">\(A\)</span>,如果对任何<span class="math inline">\(w\in A\)</span>,有<span class="math inline">\(Pr(M接受w)\ge 1-\epsilon\)</span>,且对任何<span class="math inline">\(w\notin A\)</span>,有<span class="math inline">\(Pr(M拒绝w)\ge 1-\epsilon\)</span>.</p>
-<p>BPP是所有能被概率图灵机以多项式时间和<span class="math inline">\(\frac{1}{3}\)</span>的错误概率判定的语言.我们有放大引理:设<span class="math inline">\(0\le\epsilon&lt;\frac{1}{2}\)</span>,<span class="math inline">\(p(n)\)</span>是多项式,则任一多项式时间的错误概率为<span class="math inline">\(\epsilon\)</span>的概率图灵机等价于某个多项式时间的错误概率为<span class="math inline">\(2^{-p(n)}\)</span>的概率图灵机.</p>
-<p>判定一个数是否为素数,我们有Fermat检验法:随机挑选若干正整数<span class="math inline">\(a_1,\cdots,a_k\)</span>,判断是否<span class="math inline">\(a_i^{p-1}\equiv 1(\mod p)\)</span>.在此基础上进行二次探测,就得到Miller-Rabin素数判定算法;它检验一个奇合数时,错误的概率小于等于<span class="math inline">\(2^{-k}\)</span>,进而属于BPP.</p>
-<p>一个分支程序是一个有向无环图,其顶点除了两个输出顶点标号为0和1,其他用变量标号,并且总是有0和1两条出去的边.一个只读一次的分支程序是指从起点到输出顶点的所有可能路径上,标号不会重复的分支程序.判定两个只读一次的分支程序是否等价的问题<span class="math inline">\(EQ_{ROBP}\in BPP\)</span>.</p>
-<h2 id="交替式图灵机">交替式图灵机</h2>
-<h2 id="交互式证明系统">交互式证明系统</h2>
-<h2 id="并行计算">并行计算</h2>
-<h2 id="密码学">密码学</h2>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/07/09/%E8%AE%A1%E7%AE%97%E7%90%86%E8%AE%BA%E5%AF%BC%E5%BC%95%E7%AC%94%E8%AE%B0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -479,32 +430,14 @@
 <p>对于有<span class="math inline">\(k\)</span>种元素,每种元素有<span class="math inline">\(n_k\)</span>个的多重集合,将其中<span class="math inline">\(n=n_1+\cdots+n_k\)</span>个元素全部取出进行排列的种数为<span class="math inline">\(\frac{n!}{n_1!\cdots n_k!}\)</span>. 其组合意义是,先给多重集中的元素标号,排列数为<span class="math inline">\(n!\)</span>,再忽略同种元素的编号.</p>
 <p>对于有<span class="math inline">\(k\)</span>种元素,每种元素无穷多的多重集合,从中取出<span class="math inline">\(r\)</span>个元素进行组合的种数为<span class="math inline">\({r+k-1}\choose r\)</span>. 其组合意义是,组合的个数可以转化为<span class="math inline">\(x_1+\cdots+x_k=r\)</span>的正整数解个数,而这可以利用插隔板的思想求种数.</p>
 <h1 id="第5章">第5章</h1>
-<p>组合恒等式:</p>
-<p><span class="math display">\[\sum_{k=0}^n{k n \choose k}=n2^{n-1},\sum_{k=0}^n{k^2 n \choose k}=n(n+1)2^{n-2}.\]</span></p>
-<p>它们可以用二项式定理求导证明,第一个等式也可以用恒等式<span class="math inline">\(k{n\choose k}=n{ {n-1}\choose{k-1} }\)</span>来证明. 对于一般情形,可以参考<a href="http://codeforces.com/contest/932/problem/E" target="_blank" rel="noopener">CF上的一道题</a>.</p>
-<p><span class="math display">\[\sum_{k=0}^n{ {m_1\choose k} {m_2\choose{n-k} } }={ {m_1+m_2}\choose n} , \sum_{k=0}^n{(-1)^k {n \choose k}^2}=(-1)^m { {2m}\choose m} (n=2m);0 (n为奇数).\]</span></p>
-<p>它们可以用多项式Cauchy乘积比较系数的方法证明,第一个不等式也可以用组合意义:<span class="math inline">\(m_1\)</span>个元素和<span class="math inline">\(m_2\)</span>个元素共同组成的集合中选出<span class="math inline">\(n\)</span>个元素所可能的种数. 第一个不等式取<span class="math inline">\(m_1=m_2=n\)</span>是一个特殊情形.</p>
-<p>多项式定理:</p>
-<p><span class="math display">\[(x_1+\cdots+x_t)^n=\sum_{n_1+\cdots+n_t=n}{ {n\choose{n_1 \cdots n_t} } x_1^{n_1} \cdots x_t^{n_t}}.\]</span></p>
-<h1 id="第6章">第6章</h1>
-<p>一般Mobius反演: 设<span class="math inline">\((X,\le)\)</span>为一有最小元且局部有限的偏序集,其上的函数<span class="math inline">\(f,g:X\times X\rightarrow R\)</span>具有卷积<span class="math inline">\((f*g)(x)=\sum_{z\le y}{f(x,z)g(z,y)}\)</span>.</p>
-<p>定义<span class="math inline">\(\delta\)</span>函数和<span class="math inline">\(\zeta\)</span>函数:<span class="math inline">\(\delta(x,y)=1(x=y);0(x\neq y),\zeta(x,y)=1(x\le y);0(其他)\)</span>,则<span class="math inline">\(\zeta\)</span>函数有逆函数<span class="math inline">\(\mu*\zeta=\zeta*\mu=\delta\)</span>,<span class="math inline">\(\mu\)</span>函数称作Mobius函数.</p>
-<p>对于<span class="math inline">\(f:X\rightarrow \mathbb{R}\)</span>,有Mobius变换<span class="math inline">\(g(x)=\sum_{y\le x}{f(y)}\)</span>,从而有Mobius反演<span class="math inline">\(f(x)=\sum_{y\le x}{g(y)\mu(y,x)}\)</span>.</p>
-<p>在容斥原理中,设<span class="math inline">\(X=P(U),\le=\subset\)</span>,此时Mobius函数为<span class="math inline">\(\mu(A,B)=(-1)^{|B|-|A|}(A \subset B)\)</span>; 在数论中,设<span class="math inline">\(X=\mathbb{N},\le=\mid\)</span>,此时Mobius函数化为数论中的Mobius函数:<span class="math inline">\(\mu(x,y)=\mu(\frac{y}{x})(x\mid y)\)</span>.</p>
-<h1 id="第7章">第7章</h1>
-<p>设多重集合<span class="math inline">\(S\)</span>中有<span class="math inline">\(k\)</span>种元素,每种元素有<span class="math inline">\(n_i\)</span>个,取出其中<span class="math inline">\(n\)</span>个元素的组合有<span class="math inline">\(g_n\)</span>种,排列有<span class="math inline">\(h_n\)</span>种. 则有生成函数</p>
-<p><span class="math display">\[g(x)=\sum_{n=0}^{\infty} {g_n x^n} = \prod_{i=1}^k (\sum_{j=0}^{n_i} {x^j})\]</span>, <span class="math display">\[h(x)=\sum_{n=0}^{\infty} \frac{h_n}{n!} x^n = \prod_{i=1}^k ( \sum_{j=0}^{n_i} \frac{x^j}{j!} ).\]</span></p>
-<h1 id="第8章">第8章</h1>
-<p>Catalan数可以用于出栈序列,上三角形限制下行走,乘法计算顺序,多边形三角剖分等情况.</p>
-<p>设<span class="math inline">\(n\)</span>的分拆种数为<span class="math inline">\(p_n\)</span>,则有生成函数</p>
-<p><span class="math display">\[\sum_{n=0}^{\infty}{p_nx^n}=\prod_{k=1}^{\infty}{\frac{1}{1-x^k}}\]</span>.</p>
-<h1 id="第14章">第14章</h1>
-<p>设群<span class="math inline">\(G\)</span>作用在集合<span class="math inline">\(S\)</span>上,用<span class="math inline">\(q\)</span>种颜色<span class="math inline">\(C\)</span>给<span class="math inline">\(S\)</span>中的每个元素染色,就能诱导出<span class="math inline">\(G\)</span>在<span class="math inline">\(C\)</span>上的作用.</p>
-<p>若存在<span class="math inline">\(g\in G\)</span>使得<span class="math inline">\(g*c=c&#39;\)</span>,则染色<span class="math inline">\(c\)</span>和<span class="math inline">\(c&#39;\)</span>等价,<span class="math inline">\(C\)</span>中等价类的个数记为<span class="math inline">\(N\)</span>.</p>
-<p>记稳定子<span class="math inline">\(C(g)={c\in C \| g*c=c}\)</span>,则有Burnside引理:</p>
-<p><span class="math display">\[N=\frac{1}{ \| G \| } \sum_{g\in G}{ \| C(g) \| }\]</span>.</p>
-<p>特别地,取<span class="math inline">\(S=\\{1,\cdots,n\\}\)</span>,<span class="math inline">\(G\le S_n\)</span>,记置换<span class="math inline">\(g\in G\)</span>的循环节个数为<span class="math inline">\(\tau(g)\)</span>,那么有 <span class="math inline">\(\| C(g) \| =q^{\tau(g)}\)</span> ,进而有Polya计数定理:<span class="math display">\[N=\frac{1}{ \| G \| } \sum_{g\in G}{q^{\tau(g)}}\]</span>.</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/01/24/%E7%BB%84%E5%90%88%E6%95%B0%E5%AD%A6%E7%AC%94%E8%AE%B0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -647,13 +580,18 @@ tasks.json配置如下： <figure class="highlight plain"><table><tr><td class="
 <h1 id="节例题10-5-uva12716">10.1节例题10-5 uva12716</h1>
 <p>注意要预处理求出<span class="math inline">\(3\times 10^7\)</span>以内的所有答案然后再查询，否则会超时。</p>
 <h1 id="节例题10-6-uva1635">●10.2节例题10-6 uva1635</h1>
-<p>注意不能预处理求出<span class="math inline">\(10^5\)</span>以内的所有素数再进行因子分解，应该每次把m的质因数分解求出来，然后只对着这些质因数做分解就行了，不然会超时。<br />
+<p>注意不能预处理求出<span class="math inline">\(10^5\)</span>以内的所有素数再进行因子分解，应该每次把m的质因数分解求出来，然后只对着这些质因数做分解就行了，不然会超时。<br>
 因为某个之前遇到过的神奇问题RE了无数回。。</p>
 <h1 id="节例题10-7-uva10820">10.2节例题10-7 uva10820</h1>
 <h1 id="节例题10-8-uva1262">10.2节例题10-8 uva1262</h1>
-<h1 id="节例题10-10-uva10491">10.2节例题10-10 uva10491</h1>
-<h1 id="节例题10-12-uva1637">10.2节例题10-12 uva1637</h1>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/10/20/%E7%B4%AB%E4%B9%A6%E7%AC%AC10%E7%AB%A0(%E4%B8%8A)/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -727,97 +665,14 @@ tasks.json配置如下： <figure class="highlight plain"><table><tr><td class="
 <h1 id="节例题9-9-uva10003">9.4节例题9-9 uva10003</h1>
 <p>四边形不等式优化不太好理解。</p>
 <h1 id="节例题9-11-uva1331">●9.4节例题9-11 uva1331</h1>
-<p>做法大致同lrj标程，不同处在于我把点预先扩大了两倍然后直接用整数处理中点，最后输出答案要除以4。自闭了好长时间，第一会有精度的问题，第二我抄lrj的围绕数模板抄错了一个地方！这里坑了我好长时间，找到了数据和标程的结果一个个对才发现错误！</p>
-<h1 id="节例题9-13-uva1220">9.4节例题9-13 uva1220</h1>
-<p>要注意名单的顺序是随意的，可能上级的名字没出现过，这里WA了。</p>
-<h1 id="节例题9-14-uva1218">9.4节例题9-14 uva1218</h1>
-<p>因为开始的时候写的是0~n-1，后来改成1~n了但是初始化的部分没改，自闭了不少时间。这题溢出问题其实用long long就可以完全解决。</p>
-<h1 id="节例题9-16-uva1252">9.4节例题9-16 uva1252</h1>
-<p>状态压缩DP不太好理解。</p>
-<h1 id="节例题9-18-uva10618">9.5节例题9-18 uva10618</h1>
-<p>题目对于能量的说明比较坑……没有动作应该不消耗能量，如果这次移动的脚和上一次移动的脚不一样就只消耗1能量。这题的状态转移全用if写的，又臭又长，还好没出问题。</p>
-<h1 id="节例题9-19-uva1627">9.5节例题9-19 uva1627</h1>
-<p>这题不用dp做也可以，用贪心法把d值从大到小排序，每次尽量“中和”地取即可，和第8章习题8-10是一样的（那里有证明），贪心法显得简洁很多。这题重点在于将“相互认识”的条件反转变成找二分图的问题，再用dfs处理。因为输出空行的问题WA了一发。</p>
-<p><span id="jump"></p>
-<h1 id="节例题9-21-uva1336">9.5节例题9-21 uva1336</h1>
-<h1 id="节例题9-22-uva12105">9.5节例题9-22 uva12105</h1>
-<p>本来想存储拼火柴时第一位的数字作为状态然后状态转移，发现这样并不满足dp的条件。lrj的标程提供的做法很神奇，是从右往左拼的，但是j却似乎是反过来的，还是不太理解这是怎么做的。</p>
-<h1 id="节例题9-23-uva1204">9.5节例题9-23 uva1204</h1>
-<p>代码写的又臭又长。主要是单独处理预处理后n==1的情形、计算重叠长度和DP。似乎不能按照书上说的用f[i][j]表示重叠最大长度，而应当直接表示拼接后的最小长度？标程似乎没有单独处理n==1的情形，是怎么做到的？反正是很迷的一道题。</p>
-<h1 id="节例题9-25-uva12170">9.5节例题9-25 uva12170</h1>
-<h1 id="节例题9-26-uva1380">9.5节例题9-26 uva1380</h1>
-<p>设f[i][j]表示能否安排i的子树使得i恰好在j天完成。无根树转有根树，对于叶子节点f[i][j]=true。如果有i-&gt;k，那么f[i][j]=true当且仅当f[k][1..j-1]中至少有一个true；i&lt;-k同理。如果是i-k，那么f[i][j]为true当且仅当f[k][1..j-1,j+1..k]至少有一个true。时间复杂度<span class="math inline">\(O(nk)\)</span>（这里k表示最长有向链的长度。书上的做法比较难懂……但是是<span class="math inline">\(O(n)\)</span>的。注意输入的节点之间并没有先后顺序，所以应该直接建图，然后再dfs转有根树。</p>
-<h1 id="节例题9-28-uva1439">9.5节例题9-28 uva1439</h1>
-<p>书上的做法太nb了。重点应该是定向问题与染色问题的等价性，然而并不会怎么证？</p>
-<h1 id="习题9-1-uva10285">习题9-1 uva10285</h1>
-<p>用f[i][j][k]表示滑到(i,j)且高度不低于k的最长路径，则有不滑和从四个方向滑过来两种状态转移方式。可以用滚动数组优化空间。</p>
-<h1 id="习题9-2-uva10118">习题9-2 uva10118</h1>
-<p>用f[i][j][k][l]表示四个堆各取i,j,k,l个的最多pair数，然后考虑取哪一个堆上的糖果，注意排除不可行的情况（篮子满了）。似乎和裸搜索并无太大区别？</p>
-<h1 id="习题9-3-uva1629">习题9-3 uva1629</h1>
-<p>用f[i][j][k][l]表示a[i..k][j..l]所需的最小切割线数，然后考虑切的位置进行状态转移，边界条件是如果恰好有一个樱桃则f=0，如果没有就是f=INF。时间复杂度<span class="math inline">\(O(n^2m^2(n+m))\)</span>。</p>
-<h1 id="习题9-4-uva1630">习题9-4 uva1630</h1>
-<p>设f[i][j]表示s[i..j]折叠后的最小长度，考虑不做操作、分割和将s[i..j]全体折叠三种方式的状态转移。</p>
-<h1 id="习题9-5-uva242">习题9-5 uva242</h1>
-<p>设f[i][j]表示用i张邮票，是否能拼出面值为j，时间复杂度<span class="math inline">\(O(s^2na)\)</span>（这里a表示最大的邮票面值）。网上还有一种完全背包的做法：设f[i][j]表示前i种邮票拼出1~j最少要用的邮票数量，时间复杂度<span class="math inline">\(O(sna)\)</span>，效率更高一些（好像比我快了很多）。</p>
-<h1 id="习题9-6-uva10723">习题9-6 uva10723</h1>
-<p>设f[i][j]表示s1[1..i],s2[1..j]的最短长度，g[i][j]表示对应的种类数量，状态转移类似LCS。但是当s1[i]==s2[j]的时候不能考虑另外两种状态转移，因为此时f[i-1][j-1]一定是最优的，而且其他两种对应的f即便和f[i-1][j-1]相等，对应的最短串也是一样的不能累加g。</p>
-<h1 id="习题9-7-uva1631">●习题9-7 uva1631</h1>
-<p>设f[s]表示从s变为b[1..len(s)]所需的最少次数。首先注意到有以下几个论断：</p>
-<ol type="1">
-<li>所有的旋转操作可以任意交换次序。</li>
-<li>对于以b[i]为最后一位的所有操作，他们旋转的方向相同。（假设有两个方向相反的旋转，那么我们可以把这两个旋转复合，变成1个或者2个新的旋转，所需次数不增）</li>
-</ol>
-<p>于是考虑旋转最后一位，有向上转和向下转两种，再考虑同一个方向的旋转有几个3格的、几个2格的和几个1格的，利用记忆化进行dp。注意我们不能保证向上/下转的对应次数较小者一定是最优解（样例2就是，更小一点的是652 399），这里WA了。<br />
-利用map&lt;string,int&gt;存储dp数组。于是TLE了。<br />
-参考了网上的题解，发现可以这样优化：s除去最后2位以外其他位置都必然与a相同，故设f[n][x][y]表示a[1..n]种a[n-1]改为x，a[n]改为y，变为b[1..n]的最小次数，然后和刚刚的状态转移一样。这样就省去了string处理和map查找的开销。</p>
-<h1 id="习题9-8-uva1632">习题9-8 uva1632</h1>
-<p>和<a href="jump">例题9-21</a>一样，容易看到经过的点形成一个区间，所以设f[i][j][k]表示经过i~j，最后停留在i(k=0)或j(k=1)的最少时间，对于不满足deadline的f设为INF。这题题意不清，对于恰好在deadline到达的情况是算失败的（借助<a href="https://www.udebug.com/UVa/1632" target="_blank" rel="noopener">uDebug</a>才知道）。</p>
-<h1 id="习题9-9-uva10163">习题9-9 uva10163</h1>
-<p>二分L，然后题目转化为多重背包问题，可以用单调队列优化，时间复杂度<span class="math inline">\(O(NM\log_2{L})\)</span>（其中<span class="math inline">\(L=\max_{1\le i\le n}{P_i}\)</span>。不过似乎不用优化也很快？而且似乎可以用01背包做？</p>
-<h1 id="习题9-10-uva10641">●习题9-10 uva10641</h1>
-<p>题目对于什么算照亮的定义并没有看懂……我的做法是从光源到相邻两顶点的光线如果都在这条边的右侧（不包括共线）则算照亮否则不算，网上的题解是直接判断这两条光线叉乘的符号。<br />
-不难看出每个光源能照亮的一定是一个区间，题目转化为区间选择的问题。把n边形展开成2n条边，本来的想法是设f[a][b]表示覆盖a~b的所有边的最小费用和，每次输入一个新光源可以找到它照亮的所有区间（考虑到展开成了2n条，有2个或者3个照亮区间），然后用这些区间更新f[a][b]，但是不知道为什么总是WA。<br />
-按照网上的题解，应该先确定每个光源在2n条边中照亮的区间（如果被0割开了就选跨越n的那个区间，否则选1~n范围内的那个区间），然后枚举起点，设f[a]表示覆盖起点到i的所有边的最小费用和，再枚举选择哪个光源进行状态转移。此外按照题解做法写的时候把MAXM写成了MAXN，OJ报WA而不是RE，这里一直没调出来。</p>
-<h1 id="习题9-11-uva1633">习题9-11 uva1633</h1>
-<p>设f[i][j]表示前i个字符，以j（二进制）为末k位的所有可能01串数量，只要在状态转移时排除可能的k/k+1回文子串就可以保证满足条件。因为初始化的问题WA了一次。</p>
-<h1 id="习题9-13-uva1289">★习题9-13 uva1289</h1>
-<p>最先想的是先把必须要拆开来的地方（比如124，其他盘上有个3，那就必须得拆成12 4）拆开，然后从大到小一个个叠上去，但是考虑12 12不能这么做。<br />
-然后转变了一下，考虑把不同直径的部分全拆开来（相同直径的部分不应该拆开），叠回去的时候如果相邻两部分本来就属于同一堆就补偿拆开的代价。因为直径不同的部分必须有先后顺序，所以问题就变成了：有若干块盘子，每块有一个直径和一个编号，调整块的顺序使得直径不减并且相邻不同编号的块数最小。答案等于最小的这个数量*2-原来的堆数+1。<br />
-我们把所有相同直径的块放在一起，设f[i][j]表示调整前i种直径的块，并且最后以编号为j的块结尾的最优答案，状态转移是枚举前i-1种直径的块的结尾编号k，如果现在有编号为k的块那么把k放最前面可以抵消——代价为u-1（u为第i种直径块的数量），否则不管怎样都不能抵消——代价为u。<br />
-但这样WA了。我们应该特判j=k的情况：这时我们不能简单地抵消，因为如果存在j以外的块(u&gt;1)，要么我们把j拆开来——和k能抵消，但是拆开本身又有了新的代价，要么我们把j放在最后——就不能抵消了。不管是哪一种，代价都等于u。如果u=1那么代价为0。</p>
-<h1 id="习题9-14-uva1543">习题9-14 uva1543</h1>
-<p>圆内接多边形可以直接当作若干三角形的叠加（角度跨过<span class="math inline">\(\pi\)</span>的面积为负）。首先枚举起点i，再设f[j][k]表示前i个点选择k个构成的所有三角形面积之和最大值，最后算答案的时候把最后一个三角形加上去即可。注意初始条件应该是-INF而不是0（因为状态转移过程中的面积可能为负）。</p>
-<h1 id="习题9-15-uva12589">习题9-15 uva12589</h1>
-<p>首先设各向量按<span class="math inline">\((x_i,y_i)\)</span>依次排列，则总面积大小的两倍等于<span class="math inline">\(\sum_{1\le m \le k}{x_iy_i}+2\sum_{1\le j &lt; i \le k}{x_iy_j}\)</span>。<br />
-其次，从n=2的情形可以观察出一个事实：最优答案一定满足<span class="math inline">\(i&lt; j,\frac{y_i}{x_i} &gt; \frac{y_j}{x_j}\)</span>，且<span class="math inline">\(\frac{y_i}{x_i}\)</span>相同的元素的顺序可以任意。这是因为如果存在<span class="math inline">\(\frac{y_i}{x_i} \le \frac{y_{i+1}}{x_{i+1}}\)</span>，那么交换<span class="math inline">\(i,i+1\)</span>，总面积增大<span class="math inline">\(x_iy_{i+1}-x_{i+1}y_i \ge 0\)</span>。<br />
-于是我们按照<span class="math inline">\(\frac{y_i}{x_i}\)</span>从大到小排序，设f[i][j][y]表示在前i个向量中选j个，使得<span class="math inline">\(\sum{y_k}=y\)</span>的最大面积，状态转移有选和不选两种。</p>
-<h1 id="习题9-16-uva1634">★习题9-16 uva1634</h1>
-<p>考虑某个多边形，它一定存在y最小、且在此基础上x最小的点。枚举这个点（设为p0），把剩余满足要求的点按极角排序，则要选择的多边形可以按照逆时针分成一个个三角形。设f[i][j]表示从y轴开始选择若干三角形，使得最后一个三角形由p0,i,j组成，这样的面积最大值。这时存在一个问题：第一个三角形的下侧边可以有点，最后一个三角形的上侧边可以有点，而中间三角形的两侧都不可以有其他点。为此我们特殊处理：如果p0,i,j的三角形上侧和内部无点则可以进行初始化；如果两侧和内部无点则可以按照已有的状态进行状态转移，如果下侧和内部无点则可以用来更新答案。<br />
-实际写起来的时候代码略乱，而且漏了一个特殊情形：如果只有一个三角形，那么两侧都可以有其他点。</p>
-<h1 id="习题9-17-uva10271">●习题9-17 uva10271</h1>
-<p>不难看出所有的A,B一定是相邻的。但是因为C可以任意选，所以一直找不到合适的dp算法。<br />
-搜了题解，发现正确的做法是反过来从大到小取，那么只要看前面的所有筷子取掉已经取的j-1套筷子和现在取的A,B2只以外还有没有剩的，只要有那就一定可以取为C。感觉这个想法很巧妙……但是自己想不出来。</p>
-<h1 id="习题9-18-uva1379">习题9-18 uva1379</h1>
-<p>如果直接记录前4天的投手当然会超时，但是我们会发现每天比赛只有前5的选手才需要考虑（否则我们总能找到前5中空闲的一位，换成更优的）。于是预先按照胜率排序（如果胜率相同则无所谓），dp时只需考虑5^4种可能的状态转移，时间复杂度<span class="math inline">\(O(g\times 5^5)\)</span>。<br />
-这题有个奇怪的坑，它的n,m范围可能超出了题面的范围，总是RE，把数组开大点就过了。</p>
-<h1 id="习题9-19-uva1443">●习题9-19 uva1443</h1>
-<p>不难想到二分每个半段的重量和上限maxw，经过预处理后可以<span class="math inline">\(O(1)\)</span>判断一个半段能不能取。<br />
-问题在于此时如何判断能否恰好组成m-1段：我先是设f[i]表示前i个细绳能组成最少多少段，然后判断是否有f[n]&lt;=m-1。但是这是错的，因为可行的段数不是递增的——可以组成a段不意味着一定可以组成a+1段。然后后一直卡住了……想了几个<span class="math inline">\(O(nmd\log_2w)\)</span>的算法，全部TLE。<br />
-于是又去搜题解了……原来可行的段数并不是没有递增性的！如果可以组成a段，那么它一定可以组成a+2段(在数量足够的前提下)——如果有&gt;=6的段就直接把最中间的2(6,10...)/4(8,12...)个细绳拿出来作为新的一段；否则一定有2个&gt;=4的段，把这两个各自从中间劈开即可。<br />
-所以有了递增性就有了最优子结构，设f[i][j]表示前i个细绳组成奇数(j=1)或偶数(j=0)段，最少组成多少段。判断f[n][(m-1)%2]&lt;=m-1即为能否恰好组成m-1段。时间复杂度是<span class="math inline">\(O(nd\log_2w)\)</span>的。<br />
-此外可以预先排除组不成段(n为奇数)和数量不够(n&lt;2*(m-1))的情况，这就是所有无解的情况。</p>
-<h1 id="习题9-20-uva12222">习题9-20 uva12222</h1>
-<p>设f[i][j][k]表示前i辆A方向的车、前j辆B方向的车，最后一次是A方向(k=0)或B方向(k=1)所需要的最小时间。枚举另一个方向行驶多少辆车子，这里有3个约束条件：起始时间、行驶时间和保持10s的距离。我们维护这一次行驶中，上一辆车的起始时间p和到达时间q，则第3个约束要求p'&gt;=p+10,q'&gt;=q+10，第1个约束要求p'&gt;=t，第2个约束要求q'-p'&gt;=d，满足这些条件即可进行状态转移。<br />
-一开始把题目条件看错了，认为同一方向的第二辆车子可以等第一辆走完，路空了再过去，但是其实是不可以的，所以需要第3维的状态。</p>
-<h1 id="习题9-21-uva1371">习题9-21 uva1371</h1>
-<p>首先不难想出求两个串s1,s2编辑距离的dp转移方程：如果s1[i]=s2[j]则g[i][j]=g[i-1][j-1]，否则g[i][j]=min{g[i-1][j-1],g[i][j-1],g[i-1][j]}+1。对于这一题，我首先考虑的是设f[i]表示s1[1..i]的最小近似周期，那么f[i]=min{max{f[i-j],g[j][m]}}其中g[x][y]是s1[i-j..i-j+x-1]与s2[1..y]的编辑距离，dp转移类似先前。利用“刷表法”可以达到<span class="math inline">\(O(2nm^2)\)</span>的时间复杂度（因为j至多枚举到2m——编辑距离不应该超过m。）<br />
-这个算法居然超时了，估计是数据组数不少，然而数据组数的范围却没给……注意到最大值的最小值这一特点，我们考虑二分k。这时需要注意到s1的分段情况是完全可以忽略的这一特点，我们把g[i][j]直接扩展到1&lt;=i&lt;=n,1&lt;=j&lt;=m，只不过加上一个特别的状态转移——如果g[i][m]&lt;=k，那么下一段的匹配可以重新开始，令g[i][0]=0。这样的时间复杂度是<span class="math inline">\(O(nm\log_2m)\)</span>的，跑了350ms。</p>
-<h1 id="习题9-22-uva1579">★习题9-22 uva1579</h1>
-<p>首先预处理出每个区间能否套成一个组（区间内元素互不相同）以及能否作为最终的套娃（恰好是从1开始连续的数字）。设g[i][j]表示把i~j套成一个所需最小代价，枚举先套i~k,k+1~j再把它们合并。合并的代价这里比较麻烦：设x,y为将i~j从小到大排序，i~k和k+1~j的最小元素的排名，则合并代价为(j-i+1)-abs(x-y)。（因为只有abs(x-y)个套娃不用打开）利用二分查找可以在<span class="math inline">\(O(\log_2n)\)</span>的时间内找到排名，总的时间复杂度是<span class="math inline">\(O(n^3\log_2n)\)</span>的。</p>
-<h1 id="习题9-23-uva1322">习题9-23 uva1322</h1>
-<p>利用sorter求最大值的过程可以视作是将1依次提升至n的过程——如果最大值在1，那么必须并且也只需要一条链，使得1每次从链上的某个sorter传递到右端点，最后到n的位置。不难看出求1~n的最大值只需要有这样一条把1传递上去的链就行了（因为其他的位置同样可以沿这条链传递）。设f[i]表示（利用目前的sorter）将1提升至i所需最小的链长度，不难看出f[i]是单调递增的。所以对于新的sorter<span class="math inline">\((a,b)\)</span>，状态转移只需要更新<span class="math inline">\(f[i]=\min\{f[i],f[a]+1\}(a\le i\le b)\)</span>。<br />
-因为每次更新的是一个区间，所以我们要利用线段树来优化这个dp过程。我的做法是每次先定位到线段树上的某几条被更新的线段上，然后对每条线段查询其中点的值，如果&lt;=x那么直接给右儿子打上=x的tag并更新左儿子，如果&gt;x那么不处理左儿子只更新右儿子。因为更新的时候还进行了查询，所以总的时间复杂度是<span class="math inline">\(O(m(\log_2n)^2)\)</span>的。看网上的题解似乎可以直接更新不用查询中点？不是很能理解。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/10/17/%E7%B4%AB%E4%B9%A6%E7%AC%AC9%E7%AB%A0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -888,119 +743,18 @@ tasks.json配置如下： <figure class="highlight plain"><table><tr><td class="
 <h1 id="节例题8-4-uva11134">8.5节例题8-4 uva11134</h1>
 <p>起初的做法是将数组先按r[i]再按l[i]排序，判断第i个位置是否在l[i]..r[i]中。但这个做法是错误的（如考虑[1,3],[1,3],[2,2]），正确做法是对每个位置i遍历一遍，找到未标记的包含此位置的r[j]最小的j并标记。</p>
 <h1 id="节例题8-6-uva1606">★8.5节例题8-6 uva1606</h1>
-<p>开始的时候因为纠结极角排序是按照直线排还是按照射线排浪费了不少时间，最终决定按照斜率从小到大排序，位于竖直线上的点作为最大，开始时把右侧（包括y轴正半轴）设为left（开始的时候这么写的……后来懒得改正了），另一半设为right，直线逆时针转动，遇到同一直线上的若干点时，位于右侧的由left转right，位于左侧的由right转left。似乎数据中不会出现点重合的情况，也不会有N=1的情况？<br />
+<p>开始的时候因为纠结极角排序是按照直线排还是按照射线排浪费了不少时间，最终决定按照斜率从小到大排序，位于竖直线上的点作为最大，开始时把右侧（包括y轴正半轴）设为left（开始的时候这么写的……后来懒得改正了），另一半设为right，直线逆时针转动，遇到同一直线上的若干点时，位于右侧的由left转right，位于左侧的由right转left。似乎数据中不会出现点重合的情况，也不会有N=1的情况？<br>
 标程用atan2排序用叉乘精确判断同一直线，将颜色为1的点坐标取反从而忽略颜色，以及扫描的时候采用了类似尺取的方法，代码非常简洁。</p>
-<p><span id="jump1"></p>
+<p><span id="jump1"></span></p>
 <h1 id="节例题8-8-uva1471">★8.5节例题8-8 uva1471</h1>
-<p>因为这题做法很重要而且不好懂所以重新总结一遍。首先预处理出向前、向后的连续递增序列最大长度f[i],g[i]，枚举删除后的最长序列右半段左端点i，设左半段右端点为j，最长序列长度为 <span class="math display">\[ans=\max_{j&lt;i,a_j&lt;a_i}g_j+f_i\]</span>。<br />
-对于这一类的情形可以用二分查找优化：维护所有待选的(a[j],j)，如果<span class="math inline">\(a_j\le a_k,g_j&gt;g_k\)</span>那么(a[k],k)就不可能被选中，即可以将这样的k删去。按照a[j]从小到大排序，对i用二分查找找出<span class="math inline">\(\max_{a_j&lt;a_i}a_j\)</span>，此时同样满足g[j]最大。为了将(a[i],i)按照规则添加入待选列表中，先找到<span class="math inline">\(a_{j_0}=\max_{a_j\le a_i}a_j\)</span>，如果<span class="math inline">\(g_{j_0}&gt;g_i\)</span>那么不添加(a[i],i)，否则添加并且删去所有<span class="math inline">\(a_j\ge a_i,g_j&lt;g_i\)</span>。实际使用std::set存储待选列表，以达到<span class="math inline">\(\Theta(n\log_2n)\)</span>的时间复杂度。</p>
-<p><span id="jump2"></p>
-<h1 id="节例题8-9-uva1451">★8.5节例题8-9 uva1451</h1>
-<p>同样先重新总结一遍做法。预处理出01串的前缀和s[i](约定s[0]=0)，枚举最优序列的右端点i，设左端点为j，则最优序列满足 <span class="math display">\[max_{0\le j&lt;i}\frac{s_i-s_j}{i-j}\]</span>。<br />
-注意到如果(i,s[i])(j,s[j])(k,s[k])上凸，那么可以将j删去，于是用单调队列维护所有待选的s[j]，使它们形成一个下凸序列。由于序列是下凸的，对i求最优j时只需不断出队保证队头j的<span class="math inline">\(\frac{s_i-s_j}{i-j}\)</span>不断递增即可，添加s[i]时只需检查所有(i-2,s[i-2])(i-1,s[i-1])(i,s[i])，把i-1出队即可。<br />
-实际写的时候漏洞百出……WA7连，uva真的很严格。感谢<a href="https://blog.csdn.net/gungnir0711/article/details/50411292" target="_blank" rel="noopener">网络上的一篇博客</a>，基本上他踩过的坑我全都踩了（我还踩了其他的坑……）列在下面：</p>
-<ol type="1">
-<li>因为L的限制，不能一边读s[i]一边维护单调队列，因为当你删除i-1的时候可能i-1其实可以与i-1+L位置构成一个解，这时i不应该被考虑也就是i-2,i-1,i这三点不能算做上凸点列（回忆lrj上关于这个的证明，是建立在i可以构成解的前提下）。而且是不可以先维护队头后维护队尾的，因为这样开头的1会被忽略，应该反过来先维护队尾后维护队头。<br />
-</li>
-<li>平均值相同的序列要输出区间最短的那个。<br />
-</li>
-<li>ans的初始值不能设为0，因为可能最优答案就是0，但是因为初始的区间被设为了-1,-1就不再更新答案了。<br />
-</li>
-<li>处理队头时遇到i-2,i-1,i三点共线的情况下要将i-2出队，因为第2点。</li>
-<li>用pair&lt;int,int&gt;作为有理数的时候要重载&lt;,==这些运算符，否则它会自动调用默认的比较运算符造成错误。</li>
-</ol>
-<h1 id="节例题8-10-uva714">8.6节例题8-10 uva714</h1>
-<p>输出的贪心过程是从右往左扫，尽量向左划分的同时保证至少有k个序列（后者是需要单独处理的，比如样例2）。注意二分上界即所有数的和要用long long而不是int，这里WA一次。</p>
-<h1 id="节例题8-12-uva12627">8.6节例题8-12 uva12627</h1>
-<p>设f[k,n]表示k=k时前n行(0&lt;=n&lt;=2^k)红气球数量，则满足递推式 <span class="math display">\[f(k,n)=2f(k-1,n) (n\le 2^{k-1})\]</span>和<span class="math display">\[f(k,n)=f(k-1,n-2^{k-1})+2\times 3^{k-1} (n&gt;2^{k-1})\]</span>。</p>
-<h1 id="节例题8-14-uva1607">8.6节例题8-14 uva1607</h1>
-<p>本题做法非常神奇，首先是确定了用到x的数量只可能是0或1个（因为电路只有4种功能），然后用二分法猜测可能可行的输入方案。</p>
-<h1 id="节例题8-16-uva1608">8.6节例题8-16 uva1608</h1>
-<p>本体有三个关键点（菜如我三个点一个都想不出来……），第一是用分治法，第二是预处理判断唯一元素，第三是两边找加快速度。<br />
-第三点我不是很懂书上的论证，<span class="math inline">\(T(n)=\max_{1\le k\le n}T(k)+T(n-k)+min(k,n-k)\)</span>是怎么能肯定k=n/2就是最坏情况的？我们不一定能保证T(n-1)+T(1)&gt;=2T(n/2)。这个问题我先留着，等将来算法复杂度分析能力更强的时候试着证明<span class="math inline">\(T(n)=O(n\log_2n)\)</span>一定成立。</p>
-<h1 id="节例题8-18-uva1442">8.6节例题8-18 uva1442</h1>
-<h1 id="节例题8-19-uva12265">8.6节例题8-19 uva12265</h1>
-<p>扫描法和单调数据结构的结合是一类常见题型。</p>
-<h1 id="习题8-1-uva1149">习题8-1 uva1149</h1>
-<h1 id="习题8-2-uva1610">●习题8-2 uva1610</h1>
-<p>这题如lrj所说，的确有一堆坑……首先将字符串排序，我们只需要考虑最中间两个字符串<span class="math inline">\(s,s&#39;\)</span>，找到字符串<span class="math inline">\(s\le t&lt;s&#39;\)</span>即可。<br />
-首先考虑<span class="math inline">\(s\subsetneqq s&#39;\)</span>的情况，此时<span class="math inline">\(t=s\)</span>即可。否则存在i使得<span class="math inline">\(s_i&lt;s&#39;_i\)</span>。如果i是<span class="math inline">\(s\)</span>的最后一位，还是有<span class="math inline">\(t=s\)</span>；否则，考虑字符串<span class="math inline">\(t&#39;_j=s_j(1\le j&lt;i),t&#39;_i=s_i+1\)</span>（<span class="math inline">\(s&lt;s&#39;\)</span>保证了<span class="math inline">\(t&#39;\)</span>不会超出A~Z的范围）。如果满足<span class="math inline">\(t&#39;&lt;s&#39;\)</span>显然就直接成立<span class="math inline">\(t=t&#39;\)</span>。<br />
-但是问题在于有可能<span class="math inline">\(t&#39;=s&#39;\)</span>！这时还是像刚刚一样考虑让<span class="math inline">\(t&#39;_j=s_j(1\le j\le i)\)</span>，但再往后面加字符就可能超出范围！这时要找到j使得<span class="math inline">\(s_k=\mathrm{Z}(i&lt;k&lt;j)\)</span>且<span class="math inline">\(s_j&lt;\mathrm{Z}\)</span>。如果j是<span class="math inline">\(s\)</span>的最后一位或者没有这样的j（后面全是Z）那么还是<span class="math inline">\(t=s\)</span>，否则<span class="math inline">\(t_k=s_k(1\le i&lt;j),t_j=s_j+1\)</span>。</p>
-<h1 id="习题8-3-uva12545">习题8-3 uva12545</h1>
-<p>首先统计出0变1，1变0，?变0，?变1的个数n0,n1,nq0,nq1。我们优先考虑交换0和1，因为一次操作能解决两个字符。如果n0=n1就直接输出n0+nq0+nq1。如果n0&lt;n1那么先将n0个1和0交换，剩下的n1-n0个1有两种情况：n1-n0&lt;=nq1，那么把这n1-n0个1再和?交换，总操作数为n0+(n1-n0)+nq0+nq1=n1+nq0+nq1。n1-n0&gt;nq1那么多出来的1没法变成0，所以直接输出-1。如果n0&gt;n1那么先将n1个1和0交换，多出来的n0-n1个0直接变成1就行，总操作数为n1+(n0-n1)+nq0+nq1=n0+nq0+nq1。</p>
-<h1 id="习题8-4-uva11491">习题8-4 uva11491</h1>
-<p>因为结果的长度恒定所以只要保证字典序最大即可。对第1位数字直接取a[1..d+1]中的最大值即可（如果有相同值则取最左边那个），第2位数字从第1位的右边开始找，到a[d+2]为止……重复即得结果。注意用std::multimap会超时（STL的效率问题第一次出现……），可以用std::make_heap等。</p>
-<h1 id="习题8-6-uva1611">习题8-6 uva1611</h1>
-<p>对i，我们假设1<sub>i-1位置已经是数字1</sub>i-1的有序排列，考虑将数字i移到第i个位置上。如果i位于i<sub>n位置的前半部分（包括刚好中间），那么我们可以直接执行一次翻转把i移到i</sub>n的第一个位置（即第i个位置）；如果i位于后半部分，那么我们将i<sub>n位置整体翻转一次（如果i</sub>n位置有奇数个数就翻转i+1~n），这样可以保证数字i被移到前半部分，再翻转到第i个位置即可。每个数字所需的操作数&lt;=2，所以总操作数steps&lt;=2n。<br />
-注意这一题虽然n&lt;=10000，但是时限有3000ms，直接数组模拟的时间复杂度是<span class="math inline">\(O(n^2)\)</span>，并不会超时。（vjudge上有些程序用数组模拟也能1000ms以内……不知道是什么操作……）</p>
-<h1 id="习题8-7-uva11925">习题8-7 uva11925</h1>
-<p>题目要求从1~n变成目标状态，我们反过来做。把这n个数逆时针排成一个轮盘，那么操作1还是交换前两个数，操作2相当于把轮盘向左转一次，逆操作相当于向右转。对i(1&lt;i&lt;=n)，我们假设1~i-1已经排成有序状态（无所谓位置）。执行以下步骤：</p>
-<ol type="1">
-<li>把轮盘一直向右转，直到i排在第2个位置。因为转n次相当于一个周期，所以这一步最多转n-1次也就是最多<span class="math inline">\(n-1\)</span>个操作。</li>
-<li>如果i不是恰好排在i-1右边，那么交换1,2位置，再将轮盘右转1格。重复下去，直到i-1恰好位于第1个位置。每两个操作相当于i向左前进了一格，而i距离i-1至多n-i格，所以这一步最多有<span class="math inline">\(2(n-i)\)</span>个操作。</li>
-</ol>
-<p>当n个数已经排好以后，我们再把轮盘转到1排在第1个位置，这一步最多<span class="math inline">\(n-1\)</span>个操作。于是总的操作数<span class="math inline">\(steps\le \left( \sum_{1&lt;i\le n}(n-1)+2(n-i) \right) +(n-1) =2(n-1)^2&lt;2n^2\)</span>，满足题目要求。<br />
-最后逆序输出所有操作。</p>
-<h1 id="习题8-8-uva1612">●习题8-8 uva1612</h1>
-<p>贪心，考虑一个人的可能分数至多八种，每次取满足排名要求的最高的可能分数。做的时候出了一些细节错误：</p>
-<ol type="1">
-<li>读排名的时候边读边处理，发现无解后不能立即break，要把所有排名读完再到下一轮；</li>
-<li>读到排名p后应该处理p的分数，写程序的时候写成了处理i的分数；</li>
-<li>浮点数有精度问题，要用EPS判断。</li>
-</ol>
-<p>以后要多注意这些细节错误了，不能老是犯，然后对着数据调，比赛的时候是没有数据可以调的。另外对于最后一个的分数恰好是0.00的情况，<a href="https://www.udebug.com/UVa/1612" target="_blank" rel="noopener">uDebug</a>上面的标准输出是No Solution，但我的程序输出0.00似乎也算对了？这题的题目描述得不是很清晰。</p>
-<h1 id="习题8-9-uva1613">习题8-9 uva1613</h1>
-<p>贪心，随便选一个起点然后直接DFS涂色，每次涂的时候选择的颜色尽量小以达到复用。这样一定能得到解，虽然我不知道怎么证明……</p>
-<h1 id="习题8-10-uva1614">习题8-10 uva1614</h1>
-<p>贪心，从大到小排，如果前面的和大于0就取负的，前面的和小于0就取正的，如果没法恰好取到和为0那么就是No。<br />
-我们来试着证明一下这个贪心算法的正确性：假设某个a[i]存在一个解，我们来证明按照我们的算法同样也能得到解。设存在的某个解为b[i]，并且它不满足贪心算法；为了简单起见我们不妨设此解满足<span class="math inline">\(b_1=b_2=1\)</span>，那么<span class="math inline">\(\sum_{3\le i\le n}b_i=-a_1-a_2\)</span>。因为a[i]都是正整数，所有3~n中至少存在一个子序列<span class="math inline">\(n_j\)</span>使得<span class="math inline">\(b_{n_j}=-1,\sum b_{n_j}=-a2\)</span>。那么我们把<span class="math inline">\(b_2\)</span>和<span class="math inline">\(b_{n_j}\)</span>都取反，一直做下去就能得到满足贪心算法的解。<br />
-虽然要从大到小排，但是输出b[i]时还要按照原来的次序输出，这里WA2次。</p>
-<h1 id="习题8-11-uva1615">习题8-11 uva1615</h1>
-<p>很容易将题目转换为区间选点问题，然后贪心。这题似乎不需要判断浮点数误差。因为for循环里多写了一个i++调了大半天的WA。。</p>
-<h1 id="习题8-12-uva1153">●习题8-12 uva1153</h1>
-<p>本来的做法是按照d从小到大排依次处理，如果能把目前的任务排进去那么就排进去，如果不能就试着把上一个任务换成现在这个，如果能让总时间变少那就换。但这是错误的算法。搜了题解，正确的做法是试着把前面耗时最长的那个任务换成现在这个，如果能让总时间变少那就换。<br />
-按照题目给出的提示2，这个换法总是能得到最优解。</p>
-<h1 id="习题8-13-uva10570">习题8-13 uva10570</h1>
-<p>先枚举2n种目标排列，题目转换为把一个置换分解为最少的对换个数。将此置换做轮换分解，猜测每个长为l的轮换最少分解为l-1个对换。暂时还不知道怎么证明。</p>
-<h1 id="习题8-14-uva1616">★习题8-14 uva1616</h1>
-<p>很高兴自己能做出这题。首先按照右端点从小到大排，按照题意左端点必然也是递增的，而且左（右）端点互不相同。当两条线段串在一起时我们很自然会想到两条线段各自取长度的平均值。但当有多条线段时我们会不知道取哪个平均值比较好，这时就会考虑把所有可能的平均值（包括一条线段的情况，平均值就是它的长度）都列出来取最小值。（这样还不用判断线段不相交的情况了，因为这种情况必然不是最优的）<br />
-我们在这里证明一下这个算法的正确性。首先是可行性。假设所有平均值的最小值为l，我们将每条缩减后的线段这样拼：如果已经拼好的部分右端点超过了当前线段的左端点就接在这个后面；否则就放在左端点。为什么前者这样拼不会超过当前线段的范围呢？因为已经拼好的部分必然是一截一截的，最后一截的左端点是之前某条线段的左端点。因为l小于从这条线段到当前线段的平均长度，所以这样拼必然不会超出当前线段的右端点！其次是最优性，这是显然的，因为缩减后的线段之间相互不能相交，所以任何一个可行方案的长度l'都必然小于等于任何一个平均值，从而也小于等于l。<br />
-但是这时还有一个问题：n的规模为100000，不能枚举平均值。为此我们使用斜率优化，类似<a href="#jump2">例题8-9</a>，具体做法不再赘述。写的时候爆intWA了1次。</p>
-<h1 id="习题8-15-uva1617">习题8-15 uva1617</h1>
-<p>把每个任务视为一个滑块，把所有没有空隙的滑块视作一个整体，维护上一个滑块所在段整体能滑动的范围。如果能拼到这一段上就拼上去并更新，否则另开一段。暂时还不知道怎么证明。</p>
-<h1 id="习题8-16-uva1618">★习题8-16 uva1618</h1>
-<p>这道题先后尝试了以下四种算法（为方便描述只考虑第一种弱键）：</p>
-<ol type="1">
-<li>类似归并排序的思想，枚举分割弱键中间的位置，将两边排序以后再做归并，出现右左右左的情况即说明存在弱键。WA，因为这样没有考虑左边两个/右边两个的次序问题，对4 2 1 3会输出YES。</li>
-<li>还是枚举分割中间位置，先找到右边最小值a，再找到左边大于a的最小值b，再在a的右边找到大于b的最小值c，最后在b的右边找到大于c的最小值d，找不到就说明没有。WA，因为弱键不一定是最值，对2 4 1 3 0会输出NO。</li>
-<li>枚举弱键的左右端点l,r（要求a[l]&lt;a[r])，找到区间内的最大值和最小值，如果满足顺序就说明存在弱键。没写程序就被否定了，对2 0 4 1 3会输出NO。</li>
-<li>还是枚举弱键的左右端点l,r（一样要求a[l]&lt;a[r]），用二分查找找到l右侧大于a[r]的第一个位置和r左侧小于a[l]的最后一个位置，如果满足顺序就说明存在弱键。AC。</li>
-</ol>
-<p>第4种算法在实现的时候还出现了许多细节问题，主要是预处理列表按照什么顺序排列以及用lower_bound二分查找时的细节问题。虽然是<span class="math inline">\(O(k^2\log_2k)\)</span>的算法，还用了vector，但效率还是比我想象得高，运行时间230ms。</p>
-<h1 id="习题8-17-uva11536">习题8-17 uva11536</h1>
-<p>这题时限8000ms……虽然用不到这么多。用尺取（滑动窗口）的方法，先以0为左端点找到满足条件的段，记录下1~k各数字在段内的出现次数，左端点每前进一步就移动右端点达到条件。</p>
-<h1 id="习题8-18-uva1619">习题8-18 uva1619</h1>
-<p>这题uva有坑，题目描述不对，对于相同最大值的区间要找到长度最短，并且此时左端点最小的区间。<br />
-做法是预处理每个点向左、右的第一个小于它的值l[i],r[i]（以l[i]为例，具体预处理的方法是维护<span class="math inline">\(\min_{1\le j&lt;i,a_j&lt;a_i}j\)</span>，用类似<a href="#jump1">例题8-8</a>），并且预处理前缀和s[i]。然后枚举区间的最小值点，因为值非负所以直接取l[i]+1~r[i]-1的区间。但是要注意全零的情况，应该单独处理。</p>
-<h1 id="习题8-19-uva1312">习题8-19 uva1312</h1>
-<p>首先因为n的范围远小于W,H所以要先离散化。然后先枚举行，再按列扫描，维护当前点前面所有能起到阻碍作用的树的高度，然后计算以当前点为右上角能得到的最大正方形边长。</p>
-<h1 id="习题8-20-uva1620">★习题8-20 uva1620</h1>
-<p>按照代数学的语言来说，这道题就是设G是由(1 4)(2 3)和(1 2 ... n)生成的n元置换群，给定一个n元置换σ，让你判断σ是否属于G。一开始干想怎么判断没想出来，觉得这题很难。<br />
-后来按照lrj的提示，先写了一个搜索程序来找出较小N对应的G的结构，发现n为奇数时<span class="math inline">\(G=A_n\)</span>，n为偶数时<span class="math inline">\(G=S_n\)</span>。事实的确如此，于是只要求出逆序数（<span class="math inline">\(O(n^2)\)</span>的算法就可以）就可以解决此题了。但证明还是没想出来，等回头想出来了再写上来。</p>
-<h1 id="习题8-22-uva1622">●习题8-22 uva1622</h1>
-<p>开始的时候想的是尽量反复地走，后来程序写的把自己绕进去了……换成贪心算法，每次向着代价最低的方向执行，如果有多种就选剩余指令最多的方向。WA，搜题解发现还真是原来的方法，不过要进行很多处理……这个算法真的没问题？？？然后程序写的又把我绕进去了……所以直接套标程交上去了，这题我的代码也不会放在Github上面。</p>
-<h1 id="习题8-23-uva1623">★习题8-23 uva1623</h1>
-<p>首先不难想到<span class="math inline">\(O(nlog_2n)\)</span>的贪心算法：每次遇到晴天先留着，遇到雨天的时候就二分查找从上一次相同的雨天之后第一个晴天，如果没有就是NO，否则就设置为这一天。我当初写的时候用的是std::vector，然后TLE了，以为是算法的问题（后来搜题解发现其实只要换成std::set即可），思考有没有<span class="math inline">\(O(n)\)</span>的算法。<br />
-后来我想到了一个应该是<span class="math inline">\(O(n)\)</span>的算法：用链表。把所有晴天和雨天排成一个链表，并且维护1~n对应上一个雨天的链表所在位置。当遇到一个新的晴天就往链表尾添加一个新节点；遇到雨天先找到上一个雨天的节点，然后向后找到第一个晴天节点，删去这个节点并设置对应的答案；再在链表尾添加新节点和更新上一个雨天。由于雨天节点是没必要重复的，所以我在链表上加上了一个合并操作：向后寻找晴天节点的同时，把所有雨天节点合并（重定向）到当前雨天节点，下一次查找的时候就可以跳过这些节点了。<br />
-但是调试的过程出了很大问题！由此也感受到了调程序真的是一个很痛苦的过程。vector的TLE就不说了，因为程序中有个int类型的函数我没写return给我报RE（什么鬼OJ！），我以为是数组越界调来调去。改掉以后WA，又是调不出来，从google上找到了对应比赛(ACM CERC 2010)的数据，发现两个关键错误，第一个是之前犯过的错误，发生NO的时候要先把剩下的数据读完再进行下一组，第二个是我以为合并（重定向）至多一层，实际上可能嵌套多层。<br />
-当然改正以后的程序时间效率比std::set要高，运行时间大概小一半，不过还是比不过官方题解中提到的并查集算法。</p>
-<h1 id="习题8-25-uva11175">习题8-25 uva11175</h1>
-<p>设E中uv到vw的边对应为D中的顶点v，则当两条边有公共起点和终点时它们对应的顶点相同。按照这个我们可以给所有边确定一个等价关系，划分出一个等价类。根据定义，某个等价类中任一起点和任一终点之间必有边相连。反过来如果E满足这样的性质，我们把每个等价类作为D中的一个点，再增加一个超级起点和超级终点，按照E中每个点的出入情况对应到D中的边，这样的D就能满足要求。<br />
-具体实现时可以使用DFS的方法，每次找到一个等价类并判断是否满足要求。</p>
-<h1 id="习题8-27-uva1580">★习题8-27 uva1580</h1>
-<p>这道题居然是2013年WF的题目，还不是水题……但是数据很水。考虑向水池里面加水以替代箱子的作用，在加过水以后考虑将水替换成箱子并且使得体积最大，如果这个体积大于加水的量那么这个箱子摆放的方法就是合法的。通过二分找到能加的最多的水，在此基础上就是给定一个矩阵，求使得面积*最小值最大的子矩阵。考虑枚举这个子矩阵的起止行，把每一列在这之间的部分看作一个元素（值等于最小值），那么就转化为了一维的问题，可以用单调栈计算出以某一列为最小值向左向右最多能扩展的范围。总的时间复杂度为<span class="math inline">\(O(n^3\log_2V)\)</span>其中V是水的体积作为二分上界。理论上这是TLE的，但是uva上面的数据比较水所以也过了。<br />
-后来在网上搜索，发现可以不用二分加水，而是在单调栈扫描的同时根据公式直接计算出在这里放箱子最多放多高。这样算法就是<span class="math inline">\(O(n^3)\)</span>的了，完美解决问题。这个做法回头再补上。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/09/21/%E7%B4%AB%E4%B9%A6%E7%AC%AC8%E7%AB%A0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1073,20 +827,16 @@ tasks.json配置如下： <figure class="highlight plain"><table><tr><td class="
 <h1 id="节例题7-14-uva1602">7.6节例题7-14 uva1602</h1>
 <p>标程也很值得学习，用set&lt;pair&lt;int,int&gt;&gt;以散点的形式存储网格，在套上一个set以查重。大量使用STL和foreach能使代码变简洁。 值得注意的是编程时发现的一个小地方：如果f(T&amp;)的实参是const T&amp;类型的，C++编译器会隐式类型转换，创造一个从调用的实参拷贝过来的临时变量作为真正的实参。</p>
 <h1 id="习题7-4-uva818">习题7-4 uva818</h1>
-<p>IDS要打开的圆环，判断剩下的圆环是否都形成链以及是否满足开环数+1&gt;=链数。连通集形成链的条件是要么d0=1要么d2=2且d(&gt;=3)=0（这里dn表示度数为n的点的个数）。<br />
+<p>IDS要打开的圆环，判断剩下的圆环是否都形成链以及是否满足开环数+1&gt;=链数。连通集形成链的条件是要么d0=1要么d2=2且d(&gt;=3)=0（这里dn表示度数为n的点的个数）。<br>
 写的时候问题颇多。写BFS，莫名其妙地RE2次（推测是队列开的不够大），写IDS先是忘了判重TLE1次，然后是漏了d0=1（即单个圆环）的条件WA1次。</p>
-<h1 id="习题7-7-uva12558">习题7-7 uva12558</h1>
-<p>IDA*，剪枝条件是1/n&lt;a/b&lt;=rd/n，这里rd表示剩余层数。只要用long long就可以无视题目中关于溢出的提示。注意判断被排除的分母时可能会超出数组范围导致RE，以及要对最后一个分母做排除判断。然后不要漏了文件尾的，输出用%lld而不是%I64d否则会PE。这些莫名其妙的细节错误一直改不对，前前后后错了20次。</p>
-<h1 id="习题7-8-uva12107">习题7-8 uva12107</h1>
-<p>先IDDFS修改方案，再DFS判断是否有唯一解。注意第二层DFS的时候只要枚举出左边两个数就可以直接判断等式是否成立了。做的时候有很多细节性的错误导致WA……感谢<a href="https://www.udebug.com/UVa/12107" target="_blank" rel="noopener">uDebug</a>和用户szp14提供的随机数据。</p>
-<h1 id="习题7-9-uva1604">习题7-9 uva1604</h1>
-<p>这绝对是我做过的最恶心的一题！！！用9个0~6表示方阵状态，用hash表判重（也可以用八位六进制数+空格坐标作为状态直接存储，开一个<span class="math inline">\(9\times 6^8\)</span>的数组，反正uva空间多）。<br />
-先写BFS然后TLE，怒写双向BFS然后还是TLE。搜题解发现要控制正向和反向的搜索层数（因为反向初始状态有<span class="math inline">\(2^8\)</span>个），正向21层反向9层最好，改了以后程序的时间从&gt;3000ms变成了230~240ms。</p>
-<h1 id="习题7-13-uva817">习题7-13 uva817</h1>
-<p>注意表达式中一定要有至少一个运算符！或者直接单独处理输入2000=的情况也行。这里再次感谢uDebug和用户szp14。</p>
-<h1 id="习题7-15-uva11882">习题7-15 uva11882</h1>
-<p>DFS，但是因为是求最大数所以不容易剪枝，R*C=30的时候又容易TLE。我统计了数字格的个数，当目前最优解取满了所有数字格后就开始剪枝，居然就AC了……</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/09/01/%E7%B4%AB%E4%B9%A6%E7%AC%AC7%E7%AB%A0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1150,106 +900,26 @@ tasks.json配置如下： <figure class="highlight plain"><table><tr><td class="
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>紫书就是刘汝佳的《算法竞赛入门经典(第二版)》。前5章被我跳了(写模拟WA到怀疑人生)，这是做第6章题目的经历和心得。<br />
+          <p>紫书就是刘汝佳的《算法竞赛入门经典(第二版)》。前5章被我跳了(写模拟WA到怀疑人生)，这是做第6章题目的经历和心得。<br>
 本章我的代码见<a href="https://github.com/PeriodicLaw/programming-practice/tree/master/aoapc2/chapter6" target="_blank" rel="noopener">github</a>。</p>
 <h1 id="节例题6-1-uva210">6.1节例题6-1 uva210</h1>
 <p>lock失败的这个指令在加入block列表的同时应当保留而不是跳过这个指令，这里WA2次。</p>
 <h1 id="节例题6-5-uva12657">6.2节例题6-5 uva12657</h1>
 <p>对于交换两个相邻位置的盒子时应该单独处理，这里TLE6次，但这个单独处理没什么根据，怀疑是标程针对测试数据的特殊策略。</p>
 <h1 id="节例题6-7-uva122">6.3节例题6-7 uva122</h1>
-<p>这题可以不按照书上建树的方法做。先判断有没有路径重复的，再判断非空路径去掉最后一位后是否存在对应节点，从而排除不完全的情况。然后以长度为第一关键字，字典序为第二关键字排序，按序输出即可。<br />
+<p>这题可以不按照书上建树的方法做。先判断有没有路径重复的，再判断非空路径去掉最后一位后是否存在对应节点，从而排除不完全的情况。然后以长度为第一关键字，字典序为第二关键字排序，按序输出即可。<br>
 起初我是先排序，然后枚举查找判断是否完全的，但莫名其妙地WA7次。后来改成用set&lt;string&gt;来判重、找父节点，就AC了。</p>
 <h1 id="节例题6-14-uva816">6.4节例题6-14 uva816</h1>
 <p>BFS队列大小开的是400结果开小了RE1次，后来改成100000。</p>
 <h1 id="节例题6-16-uva10129">6.4节例题6-16 uva10129</h1>
-<h1 id="节例题6-19-uva1572">6.5节例题6-19 uva1572</h1>
-<p>因为标记节点存在性的use[i]本来是+,-共用一个位置的（即use[i%26]），但写程序的时候忘了导致RE1次。这题的做法不看题解真的很难想出来。</p>
-<h1 id="节例题6-20-uva1599">★6.5节例题6-20 uva1599</h1>
-<p>一开始想正向BFS发现不可行，便按照书上的算法来写。WA了6次，前几次是因为第二次BFS应该先找出最小字典序再把对应的所有可能情况入队而不是边入队边比较最小值（那样会把不是最小字典序的方案入队），后来是因为用数组存图的各边然后排序做成邻接链表的样子结果不对劲（具体错误原因不明），改成了真正的模拟链表（还顺便把第二次BFS从手动写队列改成了和标程一样的vector）。</p>
-<h1 id="习题6-1-ua673">习题6-1 ua673</h1>
-<h1 id="习题6-2-uva712">习题6-2 uva712</h1>
-<h1 id="习题6-5-uva1600">习题6-5 uva1600</h1>
-<p>BFS一次即可。</p>
-<h1 id="习题6-6-uva12166">习题6-6 uva12166</h1>
-<p>平衡状态下每个结点值*2<sup>深度是定值。本来想枚举以哪一个节点为标准，后来发现直接将结点值*2</sup>深度存起来，用map统计出现最多的那个值即可。</p>
-<h1 id="习题6-7-uva804">习题6-7 uva804</h1>
-<p>模拟即可，不会超时。</p>
-<h1 id="习题6-8-uva806">习题6-8 uva806</h1>
-<p>依然模拟即可，可以用递归，不会超时。</p>
-<h1 id="习题6-12-uva810">习题6-12 uva810</h1>
-<p>BFS。对于骰子移动后顶、正面的变化处理比较麻烦。</p>
-<h1 id="习题6-13-uva215">习题6-13 uva215</h1>
-<p>用DFS找出所有有向环上的节点，如果是DAG就再DFS一遍算出所有单元格的值即可。因为末尾要有一个空行以及每个单元格占6个字符所以PE3次。</p>
-<h1 id="习题6-14-uva12118">★习题6-14 uva12118</h1>
-<p>这题一开始用DFS做，TLE（实际上自己的算法也有问题），故搜题解。题目可以转化为已知一个无向图（无重边和自环），让你添加最少的边（可以有重边但不可以有自环），使得整个图形成一条欧拉路。于是用DFS找出原图的各个连通块，连通块内部如果奇数点个数nodd多于2个就要补充nodd/2-1条边使这个块成为欧拉路，此外m个连通块之间还要补充m-1条边使其相互连接。<br />
-做题时还有几个细节错误：1.得到的边数要乘以T才是答案 2.注意清空上一轮的数据 3.e=0时连通块个数m=0，要单独处理 以上各WA1次。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/29/%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="PeriodicLaw">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PeriodicLaw的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/29/%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" class="post-title-link" itemprop="url">第一篇文章</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2018-08-29T00:00:00+08:00">2018-08-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-06 02:56:45" itemprop="dateModified" datetime="2020-06-06T02:56:45+08:00">2020-06-06</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>以后这里就是我的个人博客了，可能会用来记录写过的ACM题或是记录一些学习计算机时遇到的经历。<br />
-感谢<a href="https://github.com/" target="_blank" rel="noopener">Github pages</a>提供傻瓜式的建站方法，感谢<a href="https://github.com/Simpleyyt/jekyll-theme-next" target="_blank" rel="noopener">NexT</a>提供的美观、便捷的网站模板。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/08/31/%E7%B4%AB%E4%B9%A6%E7%AC%AC6%E7%AB%A0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1266,6 +936,9 @@ tasks.json配置如下： <figure class="highlight plain"><table><tr><td class="
 
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
 
 
 
@@ -1330,7 +1003,7 @@ tasks.json配置如下： <figure class="highlight plain"><table><tr><td class="
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
