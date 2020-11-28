@@ -150,6 +150,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/26/CSAPP%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="PeriodicLaw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PeriodicLaw的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/26/CSAPP%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">CSAPP实验笔记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-26T00:00:00+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-01 17:33:46" itemprop="dateModified" datetime="2020-11-01T17:33:46+08:00">2020-11-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>CSAPP的实验笔记（网址<a href="http://csapp.cs.cmu.edu/3e/labs.html" target="_blank" rel="noopener" class="uri">http://csapp.cs.cmu.edu/3e/labs.html</a>）。真够无聊的……</p>
+<h2 id="bomb-lab">Bomb Lab</h2>
+<p>先反汇编，从<code>main</code>开始，依次调用<code>initialize_bomb</code> <code>phase_1</code> <code>phase_defused</code>...直到<code>phase_6</code> <code>phase_defused</code>一系列函数。</p>
+<h3 id="phase_defused"><code>phase_defused</code></h3>
+<p>先从这个被调用了6次的函数看起，因为我估计这个应该相对简单，算热身一下。</p>
+<p>它会将<code>num_input_string</code>的值和6比较（一个位于<code>0x603760</code>的全局变量，应该是输入过多少次字符串了），如果不相等直接结束。</p>
+<p>随后它调用sscanf，（这里已经优化成用寄存器传参了）r8 rcx rdx分别是三个接收的变量，传入的格式串为0x402619处的<code>"%d %d %s"</code>，输入串则在<code>0x603870</code>，不知道实际是什么。</p>
+<p>如果成功读到3个数，会调用<code>strings_not_equal</code>，参数包括<code>0x402622</code>的<code>"DrEvil"</code>和一个变量（推测这个是刚刚读入的<code>%s</code>）。如果返回0,那么调用<code>puts</code>输出<code>"Curses, you've found the secret phase!" "But finding it and solving it are quite different"</code>；随后调用<code>secret_phase</code>函数。</p>
+<p>不论是否返回0，都会输出<code>"Congratulations! You've defused the bomb!"</code>，随后结束。如果没有成功读到3个数那么直接结束。</p>
+<p>从这里我们可以看出，这是第6关之后的一个隐藏关，需要某个字符串具有<code>%d %d DrEvil</code>的形式才会开启。我们等6关玩完了再解它。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/10/26/CSAPP%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/17/MIT6.830%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -181,7 +271,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-25 22:08:27" itemprop="dateModified" datetime="2020-10-25T22:08:27+08:00">2020-10-25</time>
+                <time title="修改时间：2020-11-28 16:41:23" itemprop="dateModified" datetime="2020-11-28T16:41:23+08:00">2020-11-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -211,7 +301,7 @@
 <p>CODASYL是用于改进IMS而出现的，用网状结构取代了树状结构，导致模型更加复杂了。然而它在操作语言上并无改进，仍然是即时记录的。</p>
 <p>1970年，Codd提出了关系模型，并证明了关系演算和关系代数之间的等价性。Codd提出的操作语言与IMS和CODASYL不同，是set-at-a-time的。</p>
 <p>在此基础上则有进一步的ER模型、范式等等。</p>
-<h2 id="lab1-基本读功能">Lab1 基本读功能</h2>
+<h2 id="lab1">Lab1</h2>
 <p>文档对整个数据库的设计的描述还是不太详细，很多靠自己摸索。</p>
 <h3 id="数据库设计">数据库设计</h3>
           <!--noindex-->
@@ -903,97 +993,6 @@ tasks.json配置如下： <figure class="highlight plain"><table><tr><td class="
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/20/%E7%B4%AB%E4%B9%A6%E7%AC%AC10%E7%AB%A0(%E4%B8%8A)/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="PeriodicLaw">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PeriodicLaw的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/10/20/%E7%B4%AB%E4%B9%A6%E7%AC%AC10%E7%AB%A0(%E4%B8%8A)/" class="post-title-link" itemprop="url">紫书第10章(上)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-10-20 00:00:00" itemprop="dateCreated datePublished" datetime="2018-10-20T00:00:00+08:00">2018-10-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-07 23:45:49" itemprop="dateModified" datetime="2020-06-07T23:45:49+08:00">2020-06-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B4%AB%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">紫书</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这一章讲ACM中的数学。值得纪念的是6~9章我一共做了uva上的100题。本章我的代码见<a href="https://github.com/PeriodicLaw/programming-practice/tree/master/aoapc2/chapter10" target="_blank" rel="noopener">Github</a>。</p>
-<p>2020-06-06补：为什么叫(上)呢？当然是因为我坑了！</p>
-<h1 id="节例题10-1-uva11582">10.1节例题10-1 uva11582</h1>
-<h1 id="节例题10-4-uva10791">10.1节例题10-4 uva10791</h1>
-<h1 id="节例题10-5-uva12716">10.1节例题10-5 uva12716</h1>
-<p>注意要预处理求出<span class="math inline">\(3\times 10^7\)</span>以内的所有答案然后再查询，否则会超时。</p>
-<h1 id="节例题10-6-uva1635">●10.2节例题10-6 uva1635</h1>
-<p>注意不能预处理求出<span class="math inline">\(10^5\)</span>以内的所有素数再进行因子分解，应该每次把m的质因数分解求出来，然后只对着这些质因数做分解就行了，不然会超时。<br>
-因为某个之前遇到过的神奇问题RE了无数回。。</p>
-<h1 id="节例题10-7-uva10820">10.2节例题10-7 uva10820</h1>
-<h1 id="节例题10-8-uva1262">10.2节例题10-8 uva1262</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/10/20/%E7%B4%AB%E4%B9%A6%E7%AC%AC10%E7%AB%A0(%E4%B8%8A)/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1063,7 +1062,7 @@ tasks.json配置如下： <figure class="highlight plain"><table><tr><td class="
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

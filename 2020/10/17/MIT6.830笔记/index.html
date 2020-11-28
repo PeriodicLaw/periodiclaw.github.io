@@ -28,7 +28,7 @@
 <meta property="og:description" content="MIT 6.830是研究生级别的数据库课程。其课程主页见http:&#x2F;&#x2F;db.lcs.mit.edu&#x2F;6.830&#x2F;sched.php。 我的代码见https:&#x2F;&#x2F;github.com&#x2F;PeriodicLaw&#x2F;simple-db-hw。 Lec2 关系数据库并非一开始就有的。在关系模式出现之前，最早的是IMS模型，即层次数据模型。数据用记录（元组）表示，记录有用于唯一标识的key，且记录类型之间用树状">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-10-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-10-25T14:08:27.370Z">
+<meta property="article:modified_time" content="2020-11-28T08:41:23.201Z">
 <meta property="article:author" content="PeriodicLaw">
 <meta name="twitter:card" content="summary">
 
@@ -185,7 +185,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-25 22:08:27" itemprop="dateModified" datetime="2020-10-25T22:08:27+08:00">2020-10-25</time>
+                <time title="修改时间：2020-11-28 16:41:23" itemprop="dateModified" datetime="2020-11-28T16:41:23+08:00">2020-11-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -215,7 +215,7 @@
 <p>CODASYL是用于改进IMS而出现的，用网状结构取代了树状结构，导致模型更加复杂了。然而它在操作语言上并无改进，仍然是即时记录的。</p>
 <p>1970年，Codd提出了关系模型，并证明了关系演算和关系代数之间的等价性。Codd提出的操作语言与IMS和CODASYL不同，是set-at-a-time的。</p>
 <p>在此基础上则有进一步的ER模型、范式等等。</p>
-<h2 id="lab1-基本读功能">Lab1 基本读功能</h2>
+<h2 id="lab1">Lab1</h2>
 <p>文档对整个数据库的设计的描述还是不太详细，很多靠自己摸索。</p>
 <h3 id="数据库设计">数据库设计</h3>
 <p>整个数据库的全局信息，通过<code>DataBase</code>类（单例）访问，底下有三个组件：</p>
@@ -263,7 +263,7 @@
 <li>优化（将内部表示转换成一个高效的执行计划）。执行计划是将表中数据通过各种管道、流经若干算子，组成的一张图。</li>
 <li>执行。</li>
 </ul>
-<h2 id="lab2-基本数据库操作和写功能">Lab2 基本数据库操作和写功能</h2>
+<h2 id="lab2">Lab2</h2>
 <p>本次实验主要实现的内容包括：</p>
 <ul>
 <li><code>Filter</code>和<code>Join</code>数据库操作（Join用最简单的嵌套循环即可）</li>
@@ -273,6 +273,47 @@
 <p>此外，给的代码已经实现了一个SQL Parser和优化器，可以按照指导，体验直接的SQL操作。</p>
 <p>实现<code>BufferPool</code>写功能的时候要特别注意“cache一致性”：<code>BufferPool</code>的<code>insertTuple</code>操作会调用底层<code>DbFile</code>的<code>insertTuple</code>操作，这个操作会返回一个被修改了的页的列表；这些页<strong>并不一定已经在池子里面</strong>，而有可能是新建的页。因此，<code>BufferPool</code>需要将这些不在池中的页加到池里，否则在后续操作时会重新从磁盘读取这些页——其内容是过时的。</p>
 <p>另外，随着实验的深入，可以明显感受到很多代码的冗余以及设计的不合理之处。</p>
+<h2 id="lec10">Lec10</h2>
+<p>SQL优化，也就是从声明式的SQL语句得到尽量优的具体执行过程。具体而言，SQL会得到逻辑上的计划（logical plan）；一个逻辑计划可能有若干物理实现（physical plan），优化器需要选择（大概）最优的一个。</p>
+<p>在<a href="https://dl.acm.org/doi/pdf/10.1145/582095.582099" target="_blank" rel="noopener">Selinger的论文</a>中，数据通过RSS（Research Storage System）进行存储管理。 数据会分布在若干页上，每个页包含若干元组。一个页的元组不一定都是同一个关系中的，但几个关系会组成一个segment，每个页只会属于一个segment。</p>
+<p>访问元组则有两种方式：</p>
+<ol type="1">
+<li>直接扫描所有页，此时每个元组、每个页都会被读取，但每个页至多读取一次。</li>
+<li>索引扫描（Index Scan）。索引往往是类似B+树的结构，其叶节点代表具体的元组，并且会指向某个页。由于我们可以设定起始和结束的键值，所以不需要读取所有的元组；但是一个页可能会被读取多次（因为索引相近的元组不一定在相近的页上）。如果元组按照索引的顺序来插入页当中的话，这种索引就叫<strong>成簇索引（Clustered Index）</strong>。</li>
+</ol>
+<h3 id="单个关系的查询">单个关系的查询</h3>
+<p>首先考虑只有单个关系的查询（也就是不存在join）。我们可以将SQL的<code>WHERE</code>子句改写成若干布尔因子（boolean factor）的合取范式，每个factor都是类似<code>column op value</code> <code>column IN ...</code>之类的形式。 factor如果谓词是sargable的、并且引用的column是索引的key，那么就说这个factor匹配这个index（比较绕口，意思是这个factor可以用索引扫描来优化）。</p>
+<p>然后，基于一些统计数据（比如一个关系或索引里有多少元组、对应多少页等等），我们对每个factor算一个估计的选择因子（selectivity factor）F，它是这个factor取真的概率的估计值；factor组合起来的时候，假设factor之间互相独立，从而计算组合的F；论文里有具体的计算方法，大概就是可以被索引的按照索引均匀分布来估计，否则直接给一个经验值。 有了<code>WHERE</code>子句整个的F以后，我们就可以估计一个select语句会选出多少元组了。</p>
+<p>我们对于一个计划的代价估计，是它所要访问的页数量和会取出的元组数量的加权平均。前者衡量IO代价，后者（也叫做<strong>RSI调用数</strong>）衡量CPU代价。 有了统计数据和估计的因子F，我们可以估计一个具体计划的代价，论文里也有具体的计算方法。 值得注意的是非clustered的索引，会假设元组是完全打乱的——访问的页数量=元组数量。</p>
+<p>考虑到<code>ORDER BY</code>和<code>GROUP BY</code>子句的情况会更复杂一点，我们还要加上排序带来的代价。<em>（这里作者讲的有点模糊）</em></p>
+<h3 id="有join的情况">有join的情况</h3>
+<p>两个关系之间的join，作者列举了两种方法：</p>
+<ul>
+<li>嵌套循环，也就是两层循环进行比对；</li>
+<li>合并连接（merge join），往往是比较两列相等的时候，如果两列有序，则可以用类似归并的方法一遍得到结果。</li>
+</ul>
+<p>当关系数量变多的时候，join顺序就变得重要了。为了限制考虑的join顺序的种类数，我们可以要求笛卡尔积（也就是没有join谓词限制的连接）尽可能迟地出现。</p>
+<p>然后，作者给出了关于join的代价估计；这里两种方法的估计公式是一样的，但子项的估计值可能不一样。</p>
+<p>最后作者以一个3关系join的例子说明具体是如何生成搜索树并估计代价的。</p>
+<ul>
+<li>首先考虑只有1个关系的情况，分析可能的索引操作，是否有序，以及各自带来的代价。</li>
+<li>然后考虑2个关系的情况，先考虑join顺序；对于nested loop，分别考虑两个关系的索引方式即可；对于merge join，则要考虑第一个关系的索引方式，第一个关系是否需要再排序，以及合并带来的代价。<strong>如果结果相同（表和有序性相同），进行剪枝，只保留最优的那个。可以看出这是动态规划的思想。</strong></li>
+<li>最后考虑3个关系的情况，先考虑前2个关系的选择，然后根据nested loop或是merge join再进行第三个选择。</li>
+</ul>
+<h3 id="嵌套查询">嵌套查询</h3>
+<p>嵌套子查询又包括无关和相关子查询两种。前者只需要预先执行一次子查询即可，得到一个内部的列表即可；后者则需要随元组的改变而重新计算，但在某些条件下，不是每次都要重新计算。</p>
+<h2 id="lab-3">Lab 3</h2>
+<p>接下来就实现SQL优化器。具体又分为两部分：代价估计和join选择。</p>
+<h3 id="代价估计">代价估计</h3>
+<p>首先，我们需要收集统计数据。 与Selinger论文中不同的是，我们会使用直方图估计，扫描一遍整个表，并将数据放入若干个桶中。估计的时候，桶内假设均匀分布。这可以看作是对Selinger中简单均匀分布的一种改进。 具体而言，我们实现<code>IntHistogram</code>类即可，而<code>StringHistogram</code>已经帮我们实现好了。</p>
+<p>其次，我们对不涉及join的情况进行估计，具体而言是估计谓词的selectivity（即F因子）、扫描代价、表的大小。扫描代价通过页数乘以一个用于加权的因子即可（平衡磁盘与IO）。 具体而言，实现<code>TableStats</code>类即可。<em>（我真的很想吐槽这里的接口设计……）</em></p>
+<p>最后，考虑join的代价估计。这里我们只需要考虑nested loop的join即可，并且已经给出了一个简单的估计公式。 为了估计多个表join的代价，我们还需要估计两个表join以后的基数——指导里也给出了一个非常粗略的估计方法。</p>
+<h3 id="join选择">join选择</h3>
+<p>接下来，我们对任意一组join谓词，选择最优的join方法。我们用动态规划的算法完成估计，对每个谓词集合，考虑最后一个join使用哪个谓词，将其他谓词join的最优策略与最后一个谓词组合得到新的最优策略。具体而言，按照给的伪代码实现<code>orderJoins</code>函数即可。</p>
+<h2 id="lab-4">Lab 4</h2>
+<p>这个实验实现基于锁的并发。锁这里是对于<code>BufferPool</code>里的页缓存加锁，有共享锁（读）和独占锁（写）两种，在获取页之前需要先获取相应的锁。这里还要利用java里的<code>synchronized</code>同步机制。</p>
+<p>这里有个很重要的问题，就是死锁的检测和处理。简单起见，死锁的检测可以用定时器实现，如果一段时间内都无法获取到锁，就说明发生死锁；发生死锁时，直接中止事务，释放自己持有的所有锁。</p>
+<p>但这样会导致一个新问题，就是两个对称的线程同时申请锁，同时发生死锁，同时中止并放弃锁，结果就是同时重来一遍。参考了一下网上的做法，我们可以将定时时长设为一个随机值，从而破坏对称。 但是在高并发的情况下，出现恰好解决死锁的概率较低，可能跑很长时间也解决不了死锁。在测试的时候，5个线程跑3s就能通过，10个线程跑1分钟也没有通过。</p>
 
     </div>
 
@@ -291,7 +332,10 @@
     <a href="/2020/08/18/docker%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="prev" title="docker安装与配置">
       <i class="fa fa-chevron-left"></i> docker安装与配置
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/CSAPP%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/" rel="next" title="CSAPP实验笔记">
+      CSAPP实验笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -350,7 +394,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#lec2"><span class="nav-number">1.</span> <span class="nav-text">Lec2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab1-基本读功能"><span class="nav-number">2.</span> <span class="nav-text">Lab1 基本读功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库设计"><span class="nav-number">2.1.</span> <span class="nav-text">数据库设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#heapfile的实现"><span class="nav-number">2.2.</span> <span class="nav-text">HeapFile的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lec5"><span class="nav-number">3.</span> <span class="nav-text">Lec5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab2-基本数据库操作和写功能"><span class="nav-number">4.</span> <span class="nav-text">Lab2 基本数据库操作和写功能</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#lec2"><span class="nav-number">1.</span> <span class="nav-text">Lec2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab1"><span class="nav-number">2.</span> <span class="nav-text">Lab1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库设计"><span class="nav-number">2.1.</span> <span class="nav-text">数据库设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#heapfile的实现"><span class="nav-number">2.2.</span> <span class="nav-text">HeapFile的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lec5"><span class="nav-number">3.</span> <span class="nav-text">Lec5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab2"><span class="nav-number">4.</span> <span class="nav-text">Lab2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lec10"><span class="nav-number">5.</span> <span class="nav-text">Lec10</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单个关系的查询"><span class="nav-number">5.1.</span> <span class="nav-text">单个关系的查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有join的情况"><span class="nav-number">5.2.</span> <span class="nav-text">有join的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#嵌套查询"><span class="nav-number">5.3.</span> <span class="nav-text">嵌套查询</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab-3"><span class="nav-number">6.</span> <span class="nav-text">Lab 3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代价估计"><span class="nav-number">6.1.</span> <span class="nav-text">代价估计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#join选择"><span class="nav-number">6.2.</span> <span class="nav-text">join选择</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab-4"><span class="nav-number">7.</span> <span class="nav-text">Lab 4</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -364,7 +408,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
