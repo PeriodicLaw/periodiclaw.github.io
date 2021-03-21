@@ -39,10 +39,4 @@ jobs:
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
-          # mkdir -p ~/.ssh/
-          # echo "$ACCESS_TOKEN" | tr -d '\r' > ~/.ssh/id_rsa
-          # chmod 600 ~/.ssh/id_rsa
-          # ssh-keyscan github.com >> ~/.ssh/known_hosts
-          # git config --global user.name "PeriodicLaw"
-          # git config --global user.email "periodiclaw0120@gmail.com"
           hexo deploy
