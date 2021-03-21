@@ -103,8 +103,10 @@ theme: next
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: git@github.com:PeriodicLaw/periodiclaw.github.io.git
-  branch: gh-pages
-  token: $ACCESS_TOKEN
+  repo:
+    github:
+      url: https://github.com/PeriodicLaw/periodiclaw.github.io.git
+      branch: gh-pages
+      token: $ACCESS_TOKEN
   name: PeriodicLaw
   email: periodiclaw0120@gmail.com
