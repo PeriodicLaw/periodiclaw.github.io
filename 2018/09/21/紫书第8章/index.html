@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这一章的内容感觉比较杂，以具体的技巧为主。本章我的代码见Github。 8.5节例题8-1 uva120 8.5节例题8-3 uva1152 强烈推荐std::sort,std::lower_bound和std::upper_bound。 8.5节例题8-4 uva11134 起初的做法是将数组先按r[i]再按l[i]排序，判断第i个位置是否在l[i]..r[i]中。但这个做法是错误的（如考虑[1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="紫书第8章">
+<meta property="og:url" content="http://example.com/2018/09/21/%E7%B4%AB%E4%B9%A6%E7%AC%AC8%E7%AB%A0/index.html">
+<meta property="og:site_name" content="PerodicLaw的个人博客">
+<meta property="og:description" content="这一章的内容感觉比较杂，以具体的技巧为主。本章我的代码见Github。 8.5节例题8-1 uva120 8.5节例题8-3 uva1152 强烈推荐std::sort,std::lower_bound和std::upper_bound。 8.5节例题8-4 uva11134 起初的做法是将数组先按r[i]再按l[i]排序，判断第i个位置是否在l[i]..r[i]中。但这个做法是错误的（如考虑[1">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-21T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-21T09:04:11.055Z">
+<meta property="article:author" content="PeriodicLaw">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2018/09/21/%E7%B4%AB%E4%B9%A6%E7%AC%AC8%E7%AB%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>紫书第8章 | PerodicLaw的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">PerodicLaw的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/09/21/%E7%B4%AB%E4%B9%A6%E7%AC%AC8%E7%AB%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="PeriodicLaw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PerodicLaw的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          紫书第8章
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-21 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-21T00:00:00+00:00">2018-09-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 09:04:11" itemprop="dateModified" datetime="2021-03-21T09:04:11+00:00">2021-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B4%AB%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">紫书</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这一章的内容感觉比较杂，以具体的技巧为主。本章我的代码见<a target="_blank" rel="noopener" href="https://github.com/PeriodicLaw/programming-practice/tree/master/aoapc2/chapter8">Github</a>。</p>
+<h1 id="节例题8-1-uva120">8.5节例题8-1 uva120</h1>
+<h1 id="节例题8-3-uva1152">8.5节例题8-3 uva1152</h1>
+<p>强烈推荐std::sort,std::lower_bound和std::upper_bound。</p>
+<h1 id="节例题8-4-uva11134">8.5节例题8-4 uva11134</h1>
+<p>起初的做法是将数组先按r[i]再按l[i]排序，判断第i个位置是否在l[i]..r[i]中。但这个做法是错误的（如考虑[1,3],[1,3],[2,2]），正确做法是对每个位置i遍历一遍，找到未标记的包含此位置的r[j]最小的j并标记。</p>
+<h1 id="节例题8-6-uva1606">★8.5节例题8-6 uva1606</h1>
+<p>开始的时候因为纠结极角排序是按照直线排还是按照射线排浪费了不少时间，最终决定按照斜率从小到大排序，位于竖直线上的点作为最大，开始时把右侧（包括y轴正半轴）设为left（开始的时候这么写的……后来懒得改正了），另一半设为right，直线逆时针转动，遇到同一直线上的若干点时，位于右侧的由left转right，位于左侧的由right转left。似乎数据中不会出现点重合的情况，也不会有N=1的情况？<br />
+标程用atan2排序用叉乘精确判断同一直线，将颜色为1的点坐标取反从而忽略颜色，以及扫描的时候采用了类似尺取的方法，代码非常简洁。</p>
+<p><span id="jump1"></p>
+<h1 id="节例题8-8-uva1471">★8.5节例题8-8 uva1471</h1>
+<p>因为这题做法很重要而且不好懂所以重新总结一遍。首先预处理出向前、向后的连续递增序列最大长度f[i],g[i]，枚举删除后的最长序列右半段左端点i，设左半段右端点为j，最长序列长度为 <span class="math display">\[ans=\max_{j&lt;i,a_j&lt;a_i}g_j+f_i\]</span>。<br />
+对于这一类的情形可以用二分查找优化：维护所有待选的(a[j],j)，如果<span class="math inline">\(a_j\le a_k,g_j&gt;g_k\)</span>那么(a[k],k)就不可能被选中，即可以将这样的k删去。按照a[j]从小到大排序，对i用二分查找找出<span class="math inline">\(\max_{a_j&lt;a_i}a_j\)</span>，此时同样满足g[j]最大。为了将(a[i],i)按照规则添加入待选列表中，先找到<span class="math inline">\(a_{j_0}=\max_{a_j\le a_i}a_j\)</span>，如果<span class="math inline">\(g_{j_0}&gt;g_i\)</span>那么不添加(a[i],i)，否则添加并且删去所有<span class="math inline">\(a_j\ge a_i,g_j&lt;g_i\)</span>。实际使用std::set存储待选列表，以达到<span class="math inline">\(\Theta(n\log_2n)\)</span>的时间复杂度。</p>
+<p><span id="jump2"></p>
+<h1 id="节例题8-9-uva1451">★8.5节例题8-9 uva1451</h1>
+<p>同样先重新总结一遍做法。预处理出01串的前缀和s[i](约定s[0]=0)，枚举最优序列的右端点i，设左端点为j，则最优序列满足 <span class="math display">\[max_{0\le j&lt;i}\frac{s_i-s_j}{i-j}\]</span>。<br />
+注意到如果(i,s[i])(j,s[j])(k,s[k])上凸，那么可以将j删去，于是用单调队列维护所有待选的s[j]，使它们形成一个下凸序列。由于序列是下凸的，对i求最优j时只需不断出队保证队头j的<span class="math inline">\(\frac{s_i-s_j}{i-j}\)</span>不断递增即可，添加s[i]时只需检查所有(i-2,s[i-2])(i-1,s[i-1])(i,s[i])，把i-1出队即可。<br />
+实际写的时候漏洞百出……WA7连，uva真的很严格。感谢<a target="_blank" rel="noopener" href="https://blog.csdn.net/gungnir0711/article/details/50411292">网络上的一篇博客</a>，基本上他踩过的坑我全都踩了（我还踩了其他的坑……）列在下面：</p>
+<ol type="1">
+<li>因为L的限制，不能一边读s[i]一边维护单调队列，因为当你删除i-1的时候可能i-1其实可以与i-1+L位置构成一个解，这时i不应该被考虑也就是i-2,i-1,i这三点不能算做上凸点列（回忆lrj上关于这个的证明，是建立在i可以构成解的前提下）。而且是不可以先维护队头后维护队尾的，因为这样开头的1会被忽略，应该反过来先维护队尾后维护队头。<br />
+</li>
+<li>平均值相同的序列要输出区间最短的那个。<br />
+</li>
+<li>ans的初始值不能设为0，因为可能最优答案就是0，但是因为初始的区间被设为了-1,-1就不再更新答案了。<br />
+</li>
+<li>处理队头时遇到i-2,i-1,i三点共线的情况下要将i-2出队，因为第2点。</li>
+<li>用pair&lt;int,int&gt;作为有理数的时候要重载&lt;,==这些运算符，否则它会自动调用默认的比较运算符造成错误。</li>
+</ol>
+<h1 id="节例题8-10-uva714">8.6节例题8-10 uva714</h1>
+<p>输出的贪心过程是从右往左扫，尽量向左划分的同时保证至少有k个序列（后者是需要单独处理的，比如样例2）。注意二分上界即所有数的和要用long long而不是int，这里WA一次。</p>
+<h1 id="节例题8-12-uva12627">8.6节例题8-12 uva12627</h1>
+<p>设f[k,n]表示k=k时前n行(0&lt;=n&lt;=2^k)红气球数量，则满足递推式 <span class="math display">\[f(k,n)=2f(k-1,n) (n\le 2^{k-1})\]</span>和<span class="math display">\[f(k,n)=f(k-1,n-2^{k-1})+2\times 3^{k-1} (n&gt;2^{k-1})\]</span>。</p>
+<h1 id="节例题8-14-uva1607">8.6节例题8-14 uva1607</h1>
+<p>本题做法非常神奇，首先是确定了用到x的数量只可能是0或1个（因为电路只有4种功能），然后用二分法猜测可能可行的输入方案。</p>
+<h1 id="节例题8-16-uva1608">8.6节例题8-16 uva1608</h1>
+<p>本体有三个关键点（菜如我三个点一个都想不出来……），第一是用分治法，第二是预处理判断唯一元素，第三是两边找加快速度。<br />
+第三点我不是很懂书上的论证，<span class="math inline">\(T(n)=\max_{1\le k\le n}T(k)+T(n-k)+min(k,n-k)\)</span>是怎么能肯定k=n/2就是最坏情况的？我们不一定能保证T(n-1)+T(1)&gt;=2T(n/2)。这个问题我先留着，等将来算法复杂度分析能力更强的时候试着证明<span class="math inline">\(T(n)=O(n\log_2n)\)</span>一定成立。</p>
+<h1 id="节例题8-18-uva1442">8.6节例题8-18 uva1442</h1>
+<h1 id="节例题8-19-uva12265">8.6节例题8-19 uva12265</h1>
+<p>扫描法和单调数据结构的结合是一类常见题型。</p>
+<h1 id="习题8-1-uva1149">习题8-1 uva1149</h1>
+<h1 id="习题8-2-uva1610">●习题8-2 uva1610</h1>
+<p>这题如lrj所说，的确有一堆坑……首先将字符串排序，我们只需要考虑最中间两个字符串<span class="math inline">\(s,s&#39;\)</span>，找到字符串<span class="math inline">\(s\le t&lt;s&#39;\)</span>即可。<br />
+首先考虑<span class="math inline">\(s\subsetneqq s&#39;\)</span>的情况，此时<span class="math inline">\(t=s\)</span>即可。否则存在i使得<span class="math inline">\(s_i&lt;s&#39;_i\)</span>。如果i是<span class="math inline">\(s\)</span>的最后一位，还是有<span class="math inline">\(t=s\)</span>；否则，考虑字符串<span class="math inline">\(t&#39;_j=s_j(1\le j&lt;i),t&#39;_i=s_i+1\)</span>（<span class="math inline">\(s&lt;s&#39;\)</span>保证了<span class="math inline">\(t&#39;\)</span>不会超出A~Z的范围）。如果满足<span class="math inline">\(t&#39;&lt;s&#39;\)</span>显然就直接成立<span class="math inline">\(t=t&#39;\)</span>。<br />
+但是问题在于有可能<span class="math inline">\(t&#39;=s&#39;\)</span>！这时还是像刚刚一样考虑让<span class="math inline">\(t&#39;_j=s_j(1\le j\le i)\)</span>，但再往后面加字符就可能超出范围！这时要找到j使得<span class="math inline">\(s_k=\mathrm{Z}(i&lt;k&lt;j)\)</span>且<span class="math inline">\(s_j&lt;\mathrm{Z}\)</span>。如果j是<span class="math inline">\(s\)</span>的最后一位或者没有这样的j（后面全是Z）那么还是<span class="math inline">\(t=s\)</span>，否则<span class="math inline">\(t_k=s_k(1\le i&lt;j),t_j=s_j+1\)</span>。</p>
+<h1 id="习题8-3-uva12545">习题8-3 uva12545</h1>
+<p>首先统计出0变1，1变0，?变0，?变1的个数n0,n1,nq0,nq1。我们优先考虑交换0和1，因为一次操作能解决两个字符。如果n0=n1就直接输出n0+nq0+nq1。如果n0&lt;n1那么先将n0个1和0交换，剩下的n1-n0个1有两种情况：n1-n0&lt;=nq1，那么把这n1-n0个1再和?交换，总操作数为n0+(n1-n0)+nq0+nq1=n1+nq0+nq1。n1-n0&gt;nq1那么多出来的1没法变成0，所以直接输出-1。如果n0&gt;n1那么先将n1个1和0交换，多出来的n0-n1个0直接变成1就行，总操作数为n1+(n0-n1)+nq0+nq1=n0+nq0+nq1。</p>
+<h1 id="习题8-4-uva11491">习题8-4 uva11491</h1>
+<p>因为结果的长度恒定所以只要保证字典序最大即可。对第1位数字直接取a[1..d+1]中的最大值即可（如果有相同值则取最左边那个），第2位数字从第1位的右边开始找，到a[d+2]为止……重复即得结果。注意用std::multimap会超时（STL的效率问题第一次出现……），可以用std::make_heap等。</p>
+<h1 id="习题8-6-uva1611">习题8-6 uva1611</h1>
+<p>对i，我们假设1<sub>i-1位置已经是数字1</sub>i-1的有序排列，考虑将数字i移到第i个位置上。如果i位于i<sub>n位置的前半部分（包括刚好中间），那么我们可以直接执行一次翻转把i移到i</sub>n的第一个位置（即第i个位置）；如果i位于后半部分，那么我们将i<sub>n位置整体翻转一次（如果i</sub>n位置有奇数个数就翻转i+1~n），这样可以保证数字i被移到前半部分，再翻转到第i个位置即可。每个数字所需的操作数&lt;=2，所以总操作数steps&lt;=2n。<br />
+注意这一题虽然n&lt;=10000，但是时限有3000ms，直接数组模拟的时间复杂度是<span class="math inline">\(O(n^2)\)</span>，并不会超时。（vjudge上有些程序用数组模拟也能1000ms以内……不知道是什么操作……）</p>
+<h1 id="习题8-7-uva11925">习题8-7 uva11925</h1>
+<p>题目要求从1~n变成目标状态，我们反过来做。把这n个数逆时针排成一个轮盘，那么操作1还是交换前两个数，操作2相当于把轮盘向左转一次，逆操作相当于向右转。对i(1&lt;i&lt;=n)，我们假设1~i-1已经排成有序状态（无所谓位置）。执行以下步骤：</p>
+<ol type="1">
+<li>把轮盘一直向右转，直到i排在第2个位置。因为转n次相当于一个周期，所以这一步最多转n-1次也就是最多<span class="math inline">\(n-1\)</span>个操作。</li>
+<li>如果i不是恰好排在i-1右边，那么交换1,2位置，再将轮盘右转1格。重复下去，直到i-1恰好位于第1个位置。每两个操作相当于i向左前进了一格，而i距离i-1至多n-i格，所以这一步最多有<span class="math inline">\(2(n-i)\)</span>个操作。</li>
+</ol>
+<p>当n个数已经排好以后，我们再把轮盘转到1排在第1个位置，这一步最多<span class="math inline">\(n-1\)</span>个操作。于是总的操作数<span class="math inline">\(steps\le \left( \sum_{1&lt;i\le n}(n-1)+2(n-i) \right) +(n-1) =2(n-1)^2&lt;2n^2\)</span>，满足题目要求。<br />
+最后逆序输出所有操作。</p>
+<h1 id="习题8-8-uva1612">●习题8-8 uva1612</h1>
+<p>贪心，考虑一个人的可能分数至多八种，每次取满足排名要求的最高的可能分数。做的时候出了一些细节错误：</p>
+<ol type="1">
+<li>读排名的时候边读边处理，发现无解后不能立即break，要把所有排名读完再到下一轮；</li>
+<li>读到排名p后应该处理p的分数，写程序的时候写成了处理i的分数；</li>
+<li>浮点数有精度问题，要用EPS判断。</li>
+</ol>
+<p>以后要多注意这些细节错误了，不能老是犯，然后对着数据调，比赛的时候是没有数据可以调的。另外对于最后一个的分数恰好是0.00的情况，<a target="_blank" rel="noopener" href="https://www.udebug.com/UVa/1612">uDebug</a>上面的标准输出是No Solution，但我的程序输出0.00似乎也算对了？这题的题目描述得不是很清晰。</p>
+<h1 id="习题8-9-uva1613">习题8-9 uva1613</h1>
+<p>贪心，随便选一个起点然后直接DFS涂色，每次涂的时候选择的颜色尽量小以达到复用。这样一定能得到解，虽然我不知道怎么证明……</p>
+<h1 id="习题8-10-uva1614">习题8-10 uva1614</h1>
+<p>贪心，从大到小排，如果前面的和大于0就取负的，前面的和小于0就取正的，如果没法恰好取到和为0那么就是No。<br />
+我们来试着证明一下这个贪心算法的正确性：假设某个a[i]存在一个解，我们来证明按照我们的算法同样也能得到解。设存在的某个解为b[i]，并且它不满足贪心算法；为了简单起见我们不妨设此解满足<span class="math inline">\(b_1=b_2=1\)</span>，那么<span class="math inline">\(\sum_{3\le i\le n}b_i=-a_1-a_2\)</span>。因为a[i]都是正整数，所有3~n中至少存在一个子序列<span class="math inline">\(n_j\)</span>使得<span class="math inline">\(b_{n_j}=-1,\sum b_{n_j}=-a2\)</span>。那么我们把<span class="math inline">\(b_2\)</span>和<span class="math inline">\(b_{n_j}\)</span>都取反，一直做下去就能得到满足贪心算法的解。<br />
+虽然要从大到小排，但是输出b[i]时还要按照原来的次序输出，这里WA2次。</p>
+<h1 id="习题8-11-uva1615">习题8-11 uva1615</h1>
+<p>很容易将题目转换为区间选点问题，然后贪心。这题似乎不需要判断浮点数误差。因为for循环里多写了一个i++调了大半天的WA。。</p>
+<h1 id="习题8-12-uva1153">●习题8-12 uva1153</h1>
+<p>本来的做法是按照d从小到大排依次处理，如果能把目前的任务排进去那么就排进去，如果不能就试着把上一个任务换成现在这个，如果能让总时间变少那就换。但这是错误的算法。搜了题解，正确的做法是试着把前面耗时最长的那个任务换成现在这个，如果能让总时间变少那就换。<br />
+按照题目给出的提示2，这个换法总是能得到最优解。</p>
+<h1 id="习题8-13-uva10570">习题8-13 uva10570</h1>
+<p>先枚举2n种目标排列，题目转换为把一个置换分解为最少的对换个数。将此置换做轮换分解，猜测每个长为l的轮换最少分解为l-1个对换。暂时还不知道怎么证明。</p>
+<h1 id="习题8-14-uva1616">★习题8-14 uva1616</h1>
+<p>很高兴自己能做出这题。首先按照右端点从小到大排，按照题意左端点必然也是递增的，而且左（右）端点互不相同。当两条线段串在一起时我们很自然会想到两条线段各自取长度的平均值。但当有多条线段时我们会不知道取哪个平均值比较好，这时就会考虑把所有可能的平均值（包括一条线段的情况，平均值就是它的长度）都列出来取最小值。（这样还不用判断线段不相交的情况了，因为这种情况必然不是最优的）<br />
+我们在这里证明一下这个算法的正确性。首先是可行性。假设所有平均值的最小值为l，我们将每条缩减后的线段这样拼：如果已经拼好的部分右端点超过了当前线段的左端点就接在这个后面；否则就放在左端点。为什么前者这样拼不会超过当前线段的范围呢？因为已经拼好的部分必然是一截一截的，最后一截的左端点是之前某条线段的左端点。因为l小于从这条线段到当前线段的平均长度，所以这样拼必然不会超出当前线段的右端点！其次是最优性，这是显然的，因为缩减后的线段之间相互不能相交，所以任何一个可行方案的长度l'都必然小于等于任何一个平均值，从而也小于等于l。<br />
+但是这时还有一个问题：n的规模为100000，不能枚举平均值。为此我们使用斜率优化，类似<a href="#jump2">例题8-9</a>，具体做法不再赘述。写的时候爆intWA了1次。</p>
+<h1 id="习题8-15-uva1617">习题8-15 uva1617</h1>
+<p>把每个任务视为一个滑块，把所有没有空隙的滑块视作一个整体，维护上一个滑块所在段整体能滑动的范围。如果能拼到这一段上就拼上去并更新，否则另开一段。暂时还不知道怎么证明。</p>
+<h1 id="习题8-16-uva1618">★习题8-16 uva1618</h1>
+<p>这道题先后尝试了以下四种算法（为方便描述只考虑第一种弱键）：</p>
+<ol type="1">
+<li>类似归并排序的思想，枚举分割弱键中间的位置，将两边排序以后再做归并，出现右左右左的情况即说明存在弱键。WA，因为这样没有考虑左边两个/右边两个的次序问题，对4 2 1 3会输出YES。</li>
+<li>还是枚举分割中间位置，先找到右边最小值a，再找到左边大于a的最小值b，再在a的右边找到大于b的最小值c，最后在b的右边找到大于c的最小值d，找不到就说明没有。WA，因为弱键不一定是最值，对2 4 1 3 0会输出NO。</li>
+<li>枚举弱键的左右端点l,r（要求a[l]&lt;a[r])，找到区间内的最大值和最小值，如果满足顺序就说明存在弱键。没写程序就被否定了，对2 0 4 1 3会输出NO。</li>
+<li>还是枚举弱键的左右端点l,r（一样要求a[l]&lt;a[r]），用二分查找找到l右侧大于a[r]的第一个位置和r左侧小于a[l]的最后一个位置，如果满足顺序就说明存在弱键。AC。</li>
+</ol>
+<p>第4种算法在实现的时候还出现了许多细节问题，主要是预处理列表按照什么顺序排列以及用lower_bound二分查找时的细节问题。虽然是<span class="math inline">\(O(k^2\log_2k)\)</span>的算法，还用了vector，但效率还是比我想象得高，运行时间230ms。</p>
+<h1 id="习题8-17-uva11536">习题8-17 uva11536</h1>
+<p>这题时限8000ms……虽然用不到这么多。用尺取（滑动窗口）的方法，先以0为左端点找到满足条件的段，记录下1~k各数字在段内的出现次数，左端点每前进一步就移动右端点达到条件。</p>
+<h1 id="习题8-18-uva1619">习题8-18 uva1619</h1>
+<p>这题uva有坑，题目描述不对，对于相同最大值的区间要找到长度最短，并且此时左端点最小的区间。<br />
+做法是预处理每个点向左、右的第一个小于它的值l[i],r[i]（以l[i]为例，具体预处理的方法是维护<span class="math inline">\(\min_{1\le j&lt;i,a_j&lt;a_i}j\)</span>，用类似<a href="#jump1">例题8-8</a>），并且预处理前缀和s[i]。然后枚举区间的最小值点，因为值非负所以直接取l[i]+1~r[i]-1的区间。但是要注意全零的情况，应该单独处理。</p>
+<h1 id="习题8-19-uva1312">习题8-19 uva1312</h1>
+<p>首先因为n的范围远小于W,H所以要先离散化。然后先枚举行，再按列扫描，维护当前点前面所有能起到阻碍作用的树的高度，然后计算以当前点为右上角能得到的最大正方形边长。</p>
+<h1 id="习题8-20-uva1620">★习题8-20 uva1620</h1>
+<p>按照代数学的语言来说，这道题就是设G是由(1 4)(2 3)和(1 2 ... n)生成的n元置换群，给定一个n元置换σ，让你判断σ是否属于G。一开始干想怎么判断没想出来，觉得这题很难。<br />
+后来按照lrj的提示，先写了一个搜索程序来找出较小N对应的G的结构，发现n为奇数时<span class="math inline">\(G=A_n\)</span>，n为偶数时<span class="math inline">\(G=S_n\)</span>。事实的确如此，于是只要求出逆序数（<span class="math inline">\(O(n^2)\)</span>的算法就可以）就可以解决此题了。但证明还是没想出来，等回头想出来了再写上来。</p>
+<h1 id="习题8-22-uva1622">●习题8-22 uva1622</h1>
+<p>开始的时候想的是尽量反复地走，后来程序写的把自己绕进去了……换成贪心算法，每次向着代价最低的方向执行，如果有多种就选剩余指令最多的方向。WA，搜题解发现还真是原来的方法，不过要进行很多处理……这个算法真的没问题？？？然后程序写的又把我绕进去了……所以直接套标程交上去了，这题我的代码也不会放在Github上面。</p>
+<h1 id="习题8-23-uva1623">★习题8-23 uva1623</h1>
+<p>首先不难想到<span class="math inline">\(O(nlog_2n)\)</span>的贪心算法：每次遇到晴天先留着，遇到雨天的时候就二分查找从上一次相同的雨天之后第一个晴天，如果没有就是NO，否则就设置为这一天。我当初写的时候用的是std::vector，然后TLE了，以为是算法的问题（后来搜题解发现其实只要换成std::set即可），思考有没有<span class="math inline">\(O(n)\)</span>的算法。<br />
+后来我想到了一个应该是<span class="math inline">\(O(n)\)</span>的算法：用链表。把所有晴天和雨天排成一个链表，并且维护1~n对应上一个雨天的链表所在位置。当遇到一个新的晴天就往链表尾添加一个新节点；遇到雨天先找到上一个雨天的节点，然后向后找到第一个晴天节点，删去这个节点并设置对应的答案；再在链表尾添加新节点和更新上一个雨天。由于雨天节点是没必要重复的，所以我在链表上加上了一个合并操作：向后寻找晴天节点的同时，把所有雨天节点合并（重定向）到当前雨天节点，下一次查找的时候就可以跳过这些节点了。<br />
+但是调试的过程出了很大问题！由此也感受到了调程序真的是一个很痛苦的过程。vector的TLE就不说了，因为程序中有个int类型的函数我没写return给我报RE（什么鬼OJ！），我以为是数组越界调来调去。改掉以后WA，又是调不出来，从google上找到了对应比赛(ACM CERC 2010)的数据，发现两个关键错误，第一个是之前犯过的错误，发生NO的时候要先把剩下的数据读完再进行下一组，第二个是我以为合并（重定向）至多一层，实际上可能嵌套多层。<br />
+当然改正以后的程序时间效率比std::set要高，运行时间大概小一半，不过还是比不过官方题解中提到的并查集算法。</p>
+<h1 id="习题8-25-uva11175">习题8-25 uva11175</h1>
+<p>设E中uv到vw的边对应为D中的顶点v，则当两条边有公共起点和终点时它们对应的顶点相同。按照这个我们可以给所有边确定一个等价关系，划分出一个等价类。根据定义，某个等价类中任一起点和任一终点之间必有边相连。反过来如果E满足这样的性质，我们把每个等价类作为D中的一个点，再增加一个超级起点和超级终点，按照E中每个点的出入情况对应到D中的边，这样的D就能满足要求。<br />
+具体实现时可以使用DFS的方法，每次找到一个等价类并判断是否满足要求。</p>
+<h1 id="习题8-27-uva1580">★习题8-27 uva1580</h1>
+<p>这道题居然是2013年WF的题目，还不是水题……但是数据很水。考虑向水池里面加水以替代箱子的作用，在加过水以后考虑将水替换成箱子并且使得体积最大，如果这个体积大于加水的量那么这个箱子摆放的方法就是合法的。通过二分找到能加的最多的水，在此基础上就是给定一个矩阵，求使得面积*最小值最大的子矩阵。考虑枚举这个子矩阵的起止行，把每一列在这之间的部分看作一个元素（值等于最小值），那么就转化为了一维的问题，可以用单调栈计算出以某一列为最小值向左向右最多能扩展的范围。总的时间复杂度为<span class="math inline">\(O(n^3\log_2V)\)</span>其中V是水的体积作为二分上界。理论上这是TLE的，但是uva上面的数据比较水所以也过了。<br />
+后来在网上搜索，发现可以不用二分加水，而是在单调栈扫描的同时根据公式直接计算出在这里放箱子最多放多高。这样算法就是<span class="math inline">\(O(n^3)\)</span>的了，完美解决问题。这个做法回头再补上。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/09/01/%E7%B4%AB%E4%B9%A6%E7%AC%AC7%E7%AB%A0/" rel="prev" title="紫书第7章">
+      <i class="fa fa-chevron-left"></i> 紫书第7章
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/10/17/%E7%B4%AB%E4%B9%A6%E7%AC%AC9%E7%AB%A0/" rel="next" title="紫书第9章">
+      紫书第9章 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-1-uva120"><span class="nav-number">1.</span> <span class="nav-text">8.5节例题8-1 uva120</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-3-uva1152"><span class="nav-number">2.</span> <span class="nav-text">8.5节例题8-3 uva1152</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-4-uva11134"><span class="nav-number">3.</span> <span class="nav-text">8.5节例题8-4 uva11134</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-6-uva1606"><span class="nav-number">4.</span> <span class="nav-text">★8.5节例题8-6 uva1606</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-8-uva1471"><span class="nav-number">5.</span> <span class="nav-text">★8.5节例题8-8 uva1471</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-9-uva1451"><span class="nav-number">6.</span> <span class="nav-text">★8.5节例题8-9 uva1451</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-10-uva714"><span class="nav-number">7.</span> <span class="nav-text">8.6节例题8-10 uva714</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-12-uva12627"><span class="nav-number">8.</span> <span class="nav-text">8.6节例题8-12 uva12627</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-14-uva1607"><span class="nav-number">9.</span> <span class="nav-text">8.6节例题8-14 uva1607</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-16-uva1608"><span class="nav-number">10.</span> <span class="nav-text">8.6节例题8-16 uva1608</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-18-uva1442"><span class="nav-number">11.</span> <span class="nav-text">8.6节例题8-18 uva1442</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%988-19-uva12265"><span class="nav-number">12.</span> <span class="nav-text">8.6节例题8-19 uva12265</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-1-uva1149"><span class="nav-number">13.</span> <span class="nav-text">习题8-1 uva1149</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-2-uva1610"><span class="nav-number">14.</span> <span class="nav-text">●习题8-2 uva1610</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-3-uva12545"><span class="nav-number">15.</span> <span class="nav-text">习题8-3 uva12545</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-4-uva11491"><span class="nav-number">16.</span> <span class="nav-text">习题8-4 uva11491</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-6-uva1611"><span class="nav-number">17.</span> <span class="nav-text">习题8-6 uva1611</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-7-uva11925"><span class="nav-number">18.</span> <span class="nav-text">习题8-7 uva11925</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-8-uva1612"><span class="nav-number">19.</span> <span class="nav-text">●习题8-8 uva1612</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-9-uva1613"><span class="nav-number">20.</span> <span class="nav-text">习题8-9 uva1613</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-10-uva1614"><span class="nav-number">21.</span> <span class="nav-text">习题8-10 uva1614</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-11-uva1615"><span class="nav-number">22.</span> <span class="nav-text">习题8-11 uva1615</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-12-uva1153"><span class="nav-number">23.</span> <span class="nav-text">●习题8-12 uva1153</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-13-uva10570"><span class="nav-number">24.</span> <span class="nav-text">习题8-13 uva10570</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-14-uva1616"><span class="nav-number">25.</span> <span class="nav-text">★习题8-14 uva1616</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-15-uva1617"><span class="nav-number">26.</span> <span class="nav-text">习题8-15 uva1617</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-16-uva1618"><span class="nav-number">27.</span> <span class="nav-text">★习题8-16 uva1618</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-17-uva11536"><span class="nav-number">28.</span> <span class="nav-text">习题8-17 uva11536</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-18-uva1619"><span class="nav-number">29.</span> <span class="nav-text">习题8-18 uva1619</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-19-uva1312"><span class="nav-number">30.</span> <span class="nav-text">习题8-19 uva1312</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-20-uva1620"><span class="nav-number">31.</span> <span class="nav-text">★习题8-20 uva1620</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-22-uva1622"><span class="nav-number">32.</span> <span class="nav-text">●习题8-22 uva1622</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-23-uva1623"><span class="nav-number">33.</span> <span class="nav-text">★习题8-23 uva1623</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-25-uva11175"><span class="nav-number">34.</span> <span class="nav-text">习题8-25 uva11175</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%988-27-uva1580"><span class="nav-number">35.</span> <span class="nav-text">★习题8-27 uva1580</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">PeriodicLaw</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PeriodicLaw</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MIT 6.830是研究生级别的数据库课程。其课程主页见http:&#x2F;&#x2F;db.lcs.mit.edu&#x2F;6.830&#x2F;sched.php。 我的代码见https:&#x2F;&#x2F;github.com&#x2F;PeriodicLaw&#x2F;simple-db-hw。 Lec2 关系数据库并非一开始就有的。在关系模式出现之前，最早的是IMS模型，即层次数据模型。数据用记录（元组）表示，记录有用于唯一标识的key，且记录类型之间用树状">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT 6.830 学习笔记">
+<meta property="og:url" content="http://example.com/2020/10/17/MIT6.830%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="PerodicLaw的个人博客">
+<meta property="og:description" content="MIT 6.830是研究生级别的数据库课程。其课程主页见http:&#x2F;&#x2F;db.lcs.mit.edu&#x2F;6.830&#x2F;sched.php。 我的代码见https:&#x2F;&#x2F;github.com&#x2F;PeriodicLaw&#x2F;simple-db-hw。 Lec2 关系数据库并非一开始就有的。在关系模式出现之前，最早的是IMS模型，即层次数据模型。数据用记录（元组）表示，记录有用于唯一标识的key，且记录类型之间用树状">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-17T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-21T09:04:11.055Z">
+<meta property="article:author" content="PeriodicLaw">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/17/MIT6.830%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MIT 6.830 学习笔记 | PerodicLaw的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">PerodicLaw的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/17/MIT6.830%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="PeriodicLaw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PerodicLaw的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT 6.830 学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-17 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-17T00:00:00+00:00">2020-10-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 09:04:11" itemprop="dateModified" datetime="2021-03-21T09:04:11+00:00">2021-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>MIT 6.830是研究生级别的数据库课程。其课程主页见<a target="_blank" rel="noopener" href="http://db.lcs.mit.edu/6.830/sched.php" class="uri">http://db.lcs.mit.edu/6.830/sched.php</a>。</p>
+<p>我的代码见<a target="_blank" rel="noopener" href="https://github.com/PeriodicLaw/simple-db-hw" class="uri">https://github.com/PeriodicLaw/simple-db-hw</a>。</p>
+<h2 id="lec2">Lec2</h2>
+<p>关系数据库并非一开始就有的。在关系模式出现之前，最早的是IMS模型，即层次数据模型。数据用记录（元组）表示，记录有用于唯一标识的key，且记录类型之间用树状关系连接起来。 IMS实质上是只有父-子关系的关系模型，存在很多限制并且会造成冗余。IMS的操作语言是即时记录（record-in-time）的，直接操作数据库细节，被执行器直接执行，因而需要程序员手动优化。</p>
+<p>CODASYL是用于改进IMS而出现的，用网状结构取代了树状结构，导致模型更加复杂了。然而它在操作语言上并无改进，仍然是即时记录的。</p>
+<p>1970年，Codd提出了关系模型，并证明了关系演算和关系代数之间的等价性。Codd提出的操作语言与IMS和CODASYL不同，是set-at-a-time的。</p>
+<p>在此基础上则有进一步的ER模型、范式等等。</p>
+<h2 id="lab1">Lab1</h2>
+<p>文档对整个数据库的设计的描述还是不太详细，很多靠自己摸索。</p>
+<h3 id="数据库设计">数据库设计</h3>
+<p>整个数据库的全局信息，通过<code>DataBase</code>类（单例）访问，底下有三个组件：</p>
+<ul>
+<li><code>Catalog</code>用来索引，根据表名得到表ID，根据表ID得到表（实质是文件）；</li>
+<li><code>BufferPool</code>用来缓存页；</li>
+<li><code>LogFile</code>处理日志，这里用不到。</li>
+</ul>
+<p>将数据库与磁盘中文件对应起来的，则是三层结构：</p>
+<ul>
+<li><code>DbFile</code>既对应数据库里的一个表，又对应硬盘上具体的文件，使用tableid（实质可能是用文件路径生成的hash）索引；</li>
+<li><code>Page</code>是缓存，一个表可以有多个页用作缓存，当需要访问时将其调入缓存池，使用<code>PageId</code>（实质是tableid+pgno）索引；</li>
+<li><code>Tuple</code>是元组，对应一行，使用<code>RecordId</code>（实质是<code>PageId</code>+tupleno）索引；<code>TupleDesc</code>对应表头。</li>
+</ul>
+<p>针对<code>DbFile</code>的实现，有两种：</p>
+<ul>
+<li><code>HeapFile</code>是顺序存储所有元组在一起的简单结构；</li>
+<li><code>BTreeFile</code>使用B+树，这里用不到。</li>
+</ul>
+<p>两种实现都有各自对应的<code>Page</code>等。</p>
+<h3 id="heapfile的实现">HeapFile的实现</h3>
+<p><code>HeapFile</code>对应磁盘上一个具体的文件，由若干连续的页（<code>HeapPage</code>）组成，一个页一般4096字节。</p>
+<p><code>HeapPage</code>的结构包括一个头和若干元组，头是一个bitmap，用来表示每个元组是使用中还是未使用。 在内存中，每个元组都是一个Tuple对象；在磁盘上，每个Tuple占据一段字节，由里面的每个Field连续使用（整数是一个4字节的int，字符串是先一个int表示长度，再每个字符）。</p>
+<p>实验里会要求我们实现iterator。<code>HeapFile</code>的iterator遍历每个页的iterator；<code>HeapPage</code>的iterator遍历每个被使用的tuple。</p>
+<h2 id="lec5">Lec5</h2>
+<p>数据库大概包括几个组成部分：</p>
+<ul>
+<li>进程管理器，负责进程&amp;线程的调度，从而实现并发</li>
+<li>客户端通信管理器，负责和客户端通过一定的协议（JDBC等）通信</li>
+<li>关系查询处理器，负责解析、优化、执行SQL查询等</li>
+<li>事务与存储管理器，负责与硬盘交互的访问方法（Access Method）、事务管理等</li>
+<li>共享组件和工具</li>
+</ul>
+<p>进程管理涉及到OS提供的进程&amp;线程工具。一般来说有这么几种模型（一个worker对应一个客户端，负责执行SQL查询等操作）：</p>
+<ul>
+<li>每个worker对应一个进程</li>
+<li>每个worker对应一个线程（OS级线程/DBMS自己实现的轻量级线程）</li>
+<li>使用进程池/线程池</li>
+</ul>
+<p>进程管理还要负责准入控制——当资源不足时，worker必须等待直到资源可用。</p>
+<p>关系查询处理器将SQL语句（通常是DML，DDL一般直接解释执行不需要走优化等流程）解析、优化、执行，具体过程包括：</p>
+<ul>
+<li>SQL解析，以及解析时的权限检查，得到SQL语句的内部表示。</li>
+<li>重写（改变内部表示的同时不改变语义），比如视图扩展（把视图替换成下面的表）、常量计算、布尔逻辑重写、冗余连接（join）消去、子查询展开等等。</li>
+<li>优化（将内部表示转换成一个高效的执行计划）。执行计划是将表中数据通过各种管道、流经若干算子，组成的一张图。</li>
+<li>执行。</li>
+</ul>
+<h2 id="lab2">Lab2</h2>
+<p>本次实验主要实现的内容包括：</p>
+<ul>
+<li><code>Filter</code>和<code>Join</code>数据库操作（Join用最简单的嵌套循环即可）</li>
+<li>底层<code>HeapFile</code>和<code>BufferPool</code>的写功能</li>
+<li><code>Insert</code>和<code>Delete</code>数据库操作</li>
+</ul>
+<p>此外，给的代码已经实现了一个SQL Parser和优化器，可以按照指导，体验直接的SQL操作。</p>
+<p>实现<code>BufferPool</code>写功能的时候要特别注意“cache一致性”：<code>BufferPool</code>的<code>insertTuple</code>操作会调用底层<code>DbFile</code>的<code>insertTuple</code>操作，这个操作会返回一个被修改了的页的列表；这些页<strong>并不一定已经在池子里面</strong>，而有可能是新建的页。因此，<code>BufferPool</code>需要将这些不在池中的页加到池里，否则在后续操作时会重新从磁盘读取这些页——其内容是过时的。</p>
+<p>另外，随着实验的深入，可以明显感受到很多代码的冗余以及设计的不合理之处。</p>
+<h2 id="lec10">Lec10</h2>
+<p>SQL优化，也就是从声明式的SQL语句得到尽量优的具体执行过程。具体而言，SQL会得到逻辑上的计划（logical plan）；一个逻辑计划可能有若干物理实现（physical plan），优化器需要选择（大概）最优的一个。</p>
+<p>在<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/582095.582099">Selinger的论文</a>中，数据通过RSS（Research Storage System）进行存储管理。 数据会分布在若干页上，每个页包含若干元组。一个页的元组不一定都是同一个关系中的，但几个关系会组成一个segment，每个页只会属于一个segment。</p>
+<p>访问元组则有两种方式：</p>
+<ol type="1">
+<li>直接扫描所有页，此时每个元组、每个页都会被读取，但每个页至多读取一次。</li>
+<li>索引扫描（Index Scan）。索引往往是类似B+树的结构，其叶节点代表具体的元组，并且会指向某个页。由于我们可以设定起始和结束的键值，所以不需要读取所有的元组；但是一个页可能会被读取多次（因为索引相近的元组不一定在相近的页上）。如果元组按照索引的顺序来插入页当中的话，这种索引就叫<strong>成簇索引（Clustered Index）</strong>。</li>
+</ol>
+<h3 id="单个关系的查询">单个关系的查询</h3>
+<p>首先考虑只有单个关系的查询（也就是不存在join）。我们可以将SQL的<code>WHERE</code>子句改写成若干布尔因子（boolean factor）的合取范式，每个factor都是类似<code>column op value</code> <code>column IN ...</code>之类的形式。 factor如果谓词是sargable的、并且引用的column是索引的key，那么就说这个factor匹配这个index（比较绕口，意思是这个factor可以用索引扫描来优化）。</p>
+<p>然后，基于一些统计数据（比如一个关系或索引里有多少元组、对应多少页等等），我们对每个factor算一个估计的选择因子（selectivity factor）F，它是这个factor取真的概率的估计值；factor组合起来的时候，假设factor之间互相独立，从而计算组合的F；论文里有具体的计算方法，大概就是可以被索引的按照索引均匀分布来估计，否则直接给一个经验值。 有了<code>WHERE</code>子句整个的F以后，我们就可以估计一个select语句会选出多少元组了。</p>
+<p>我们对于一个计划的代价估计，是它所要访问的页数量和会取出的元组数量的加权平均。前者衡量IO代价，后者（也叫做<strong>RSI调用数</strong>）衡量CPU代价。 有了统计数据和估计的因子F，我们可以估计一个具体计划的代价，论文里也有具体的计算方法。 值得注意的是非clustered的索引，会假设元组是完全打乱的——访问的页数量=元组数量。</p>
+<p>考虑到<code>ORDER BY</code>和<code>GROUP BY</code>子句的情况会更复杂一点，我们还要加上排序带来的代价。<em>（这里作者讲的有点模糊）</em></p>
+<h3 id="有join的情况">有join的情况</h3>
+<p>两个关系之间的join，作者列举了两种方法：</p>
+<ul>
+<li>嵌套循环，也就是两层循环进行比对；</li>
+<li>合并连接（merge join），往往是比较两列相等的时候，如果两列有序，则可以用类似归并的方法一遍得到结果。</li>
+</ul>
+<p>当关系数量变多的时候，join顺序就变得重要了。为了限制考虑的join顺序的种类数，我们可以要求笛卡尔积（也就是没有join谓词限制的连接）尽可能迟地出现。</p>
+<p>然后，作者给出了关于join的代价估计；这里两种方法的估计公式是一样的，但子项的估计值可能不一样。</p>
+<p>最后作者以一个3关系join的例子说明具体是如何生成搜索树并估计代价的。</p>
+<ul>
+<li>首先考虑只有1个关系的情况，分析可能的索引操作，是否有序，以及各自带来的代价。</li>
+<li>然后考虑2个关系的情况，先考虑join顺序；对于nested loop，分别考虑两个关系的索引方式即可；对于merge join，则要考虑第一个关系的索引方式，第一个关系是否需要再排序，以及合并带来的代价。<strong>如果结果相同（表和有序性相同），进行剪枝，只保留最优的那个。可以看出这是动态规划的思想。</strong></li>
+<li>最后考虑3个关系的情况，先考虑前2个关系的选择，然后根据nested loop或是merge join再进行第三个选择。</li>
+</ul>
+<h3 id="嵌套查询">嵌套查询</h3>
+<p>嵌套子查询又包括无关和相关子查询两种。前者只需要预先执行一次子查询即可，得到一个内部的列表即可；后者则需要随元组的改变而重新计算，但在某些条件下，不是每次都要重新计算。</p>
+<h2 id="lab-3">Lab 3</h2>
+<p>接下来就实现SQL优化器。具体又分为两部分：代价估计和join选择。</p>
+<h3 id="代价估计">代价估计</h3>
+<p>首先，我们需要收集统计数据。 与Selinger论文中不同的是，我们会使用直方图估计，扫描一遍整个表，并将数据放入若干个桶中。估计的时候，桶内假设均匀分布。这可以看作是对Selinger中简单均匀分布的一种改进。 具体而言，我们实现<code>IntHistogram</code>类即可，而<code>StringHistogram</code>已经帮我们实现好了。</p>
+<p>其次，我们对不涉及join的情况进行估计，具体而言是估计谓词的selectivity（即F因子）、扫描代价、表的大小。扫描代价通过页数乘以一个用于加权的因子即可（平衡磁盘与IO）。 具体而言，实现<code>TableStats</code>类即可。<em>（我真的很想吐槽这里的接口设计……）</em></p>
+<p>最后，考虑join的代价估计。这里我们只需要考虑nested loop的join即可，并且已经给出了一个简单的估计公式。 为了估计多个表join的代价，我们还需要估计两个表join以后的基数——指导里也给出了一个非常粗略的估计方法。</p>
+<h3 id="join选择">join选择</h3>
+<p>接下来，我们对任意一组join谓词，选择最优的join方法。我们用动态规划的算法完成估计，对每个谓词集合，考虑最后一个join使用哪个谓词，将其他谓词join的最优策略与最后一个谓词组合得到新的最优策略。具体而言，按照给的伪代码实现<code>orderJoins</code>函数即可。</p>
+<h2 id="lab-4">Lab 4</h2>
+<p>这个实验实现基于锁的并发。锁这里是对于<code>BufferPool</code>里的页缓存加锁，有共享锁（读）和独占锁（写）两种，在获取页之前需要先获取相应的锁。这里还要利用java里的<code>synchronized</code>同步机制。</p>
+<p>这里有个很重要的问题，就是死锁的检测和处理。简单起见，死锁的检测可以用定时器实现，如果一段时间内都无法获取到锁，就说明发生死锁；发生死锁时，直接中止事务，释放自己持有的所有锁。</p>
+<p>但这样会导致一个新问题，就是两个对称的线程同时申请锁，同时发生死锁，同时中止并放弃锁，结果就是同时重来一遍。参考了一下网上的做法，我们可以将定时时长设为一个随机值，从而破坏对称。 但是在高并发的情况下，出现恰好解决死锁的概率较低，可能跑很长时间也解决不了死锁。在测试的时候，5个线程跑3s就能通过，10个线程跑1分钟也没有通过。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/18/docker%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="prev" title="docker安装与配置">
+      <i class="fa fa-chevron-left"></i> docker安装与配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/26/CSAPP%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/" rel="next" title="CSAPP实验笔记">
+      CSAPP实验笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#lec2"><span class="nav-number">1.</span> <span class="nav-text">Lec2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab1"><span class="nav-number">2.</span> <span class="nav-text">Lab1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.1.</span> <span class="nav-text">数据库设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#heapfile%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.</span> <span class="nav-text">HeapFile的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lec5"><span class="nav-number">3.</span> <span class="nav-text">Lec5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab2"><span class="nav-number">4.</span> <span class="nav-text">Lab2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lec10"><span class="nav-number">5.</span> <span class="nav-text">Lec10</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E4%B8%AA%E5%85%B3%E7%B3%BB%E7%9A%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.1.</span> <span class="nav-text">单个关系的查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89join%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">5.2.</span> <span class="nav-text">有join的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.3.</span> <span class="nav-text">嵌套查询</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab-3"><span class="nav-number">6.</span> <span class="nav-text">Lab 3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E4%BB%B7%E4%BC%B0%E8%AE%A1"><span class="nav-number">6.1.</span> <span class="nav-text">代价估计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#join%E9%80%89%E6%8B%A9"><span class="nav-number">6.2.</span> <span class="nav-text">join选择</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab-4"><span class="nav-number">7.</span> <span class="nav-text">Lab 4</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">PeriodicLaw</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PeriodicLaw</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

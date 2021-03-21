@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这篇来介绍一下程序语言的类型系统。部分内容是TAPL(Types And Programming Languages)的读书笔记,但不全是. 无类型Lambda演算 无类型Lambda演算其实只有两个内容：抽象(Abstract)和应用(Apply).抽象是引入Lambda表达式\(\lambda x.t\),应用是函数调用\(t \; t\). 对于无类型Lambda演算而言,其语义就是用替换完">
+<meta property="og:type" content="article">
+<meta property="og:title" content="类型系统">
+<meta property="og:url" content="http://example.com/2020/06/07/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="PerodicLaw的个人博客">
+<meta property="og:description" content="这篇来介绍一下程序语言的类型系统。部分内容是TAPL(Types And Programming Languages)的读书笔记,但不全是. 无类型Lambda演算 无类型Lambda演算其实只有两个内容：抽象(Abstract)和应用(Apply).抽象是引入Lambda表达式\(\lambda x.t\),应用是函数调用\(t \; t\). 对于无类型Lambda演算而言,其语义就是用替换完">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-07T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-21T09:04:11.055Z">
+<meta property="article:author" content="PeriodicLaw">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2020/06/07/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>类型系统 | PerodicLaw的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">PerodicLaw的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/07/%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="PeriodicLaw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PerodicLaw的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          类型系统
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-07 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-07T00:00:00+00:00">2020-06-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 09:04:11" itemprop="dateModified" datetime="2021-03-21T09:04:11+00:00">2021-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">读书笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇来介绍一下程序语言的类型系统。部分内容是TAPL(Types And Programming Languages)的读书笔记,但不全是.</p>
+<h2 id="无类型lambda演算">无类型Lambda演算</h2>
+<p>无类型Lambda演算其实只有两个内容：抽象(Abstract)和应用(Apply).抽象是引入Lambda表达式<span class="math inline">\(\lambda x.t\)</span>,应用是函数调用<span class="math inline">\(t \; t\)</span>.</p>
+<p>对于无类型Lambda演算而言,其语义就是用替换完成函数调用,也就是<span class="math inline">\((\lambda x.t_1)t_2\)</span>等于用<span class="math inline">\(t_2\)</span>替换<span class="math inline">\(t_1\)</span>中自由出现的所有<span class="math inline">\(x\)</span>.</p>
+<p>基于这样的语法和语义,足以得到和图灵机等同的计算模型,例如Church数:</p>
+<p><span class="math display">\[0=\lambda s.\lambda z. z, 1=\lambda s.\lambda z.s\;z, 2=\lambda s.\lambda z.s\;s\;z,\cdots\]</span></p>
+<p>又例如Y组合子,可以用来构造递归函数:</p>
+<p><span class="math display">\[Y=\lambda f.(\lambda x.f(\lambda y.x\;x\;y))\;(\lambda x.f(\lambda y.x\;x\;y))\]</span></p>
+<p>因为<span class="math inline">\(Y\;f=f(Y\;f)\)</span>,所以也叫做不动点组合子.这个构造还是相当巧妙的.</p>
+<h2 id="简单类型lambda演算">简单类型Lambda演算</h2>
+<p>尽管利用无类型Lambda演算,足够达到完全的计算能力,但我们对无类型演算的结果是完全无知的(甚至可能发散),所以我们会希望像集合论一样引入对值的限制,在计算之前就能获得一些信息.</p>
+<p>具体而言,我们希望引入类型<span class="math inline">\(T\)</span>,如果一个项<span class="math inline">\(t\)</span>具有类型<span class="math inline">\(T\)</span>那么记作<span class="math inline">\(t:T\)</span>,这往往意味着<span class="math inline">\(t\)</span>的取值范围被<span class="math inline">\(T\)</span>所限定.</p>
+<p>为了适应Lambda演算,我们需要引入函数类型<span class="math inline">\(T\to T\)</span>,构成简单类型Lambda演算.此时Lambda表达式也需要引入类型:<span class="math inline">\(\lambda x:T.\;t\)</span>,函数调用不变.这样构造出的演算系统叫做简单类型Lambda演算<span class="math inline">\(\lambda_\to\)</span>.</p>
+<p>利用Lambda表达式中标出的类型,我们足够推断出每个项的类型,这个过程和逻辑系统的推理很相似,假设前提(环境)为<span class="math inline">\(\Gamma\)</span>,那么类型推断包括三条规则,声明,抽象和应用:</p>
+<p><span class="math display">\[\frac{x:T\in\Gamma}{\Gamma\vdash x:T}\]</span> <span class="math display">\[\frac{\Gamma,x:T_1\vdash t:T_2}{\Gamma\vdash(\lambda x:T_1.\;t):T_1\to T_2}\]</span> <span class="math display">\[\frac{\Gamma\vdash t_1:T_1\to T_2\quad\Gamma\vdash t_2:T_1}{\Gamma\vdash(t_1\;t_2):T_2}\]</span></p>
+<p>有些项是不能根据这些推理规则推断出类型的(比如Y组合子),这样的项恰恰也是不会算出一个合法值的,这表明简单类型Lambda演算构成一个类型安全的系统.</p>
+<p>类型推断与逻辑系统的相似性导致了Curry-Howard同构:将类型对应到命题逻辑中的命题,若存在某个项以<span class="math inline">\(T\)</span>为类型,那么<span class="math inline">\(T\)</span>对应的类型在直觉主义逻辑中对应真命题,否则对应假命题.这里直觉主义逻辑是不承认矛盾律/排中律的命题逻辑系统,我认为这恰恰是Curry-Howard同构的实质——构造出项的过程就是直觉主义逻辑的"构造性证明".</p>
+<h2 id="简单类型lambda演算的扩展">简单类型Lambda演算的扩展</h2>
+<p>我们可以引入记录/元组/结构体类型,也叫积类型<span class="math inline">\(T_1\times T_2\)</span>,因为它对应集合的笛卡尔积.我们可以相应地引入元组产生和消去时的类型推理规则.</p>
+<p>我们也可以引入枚举体/(tagged) union类型,也叫和类型<span class="math inline">\(T_1+T_2\)</span>,它对应集合的无交并.我们可以相应地引入union产生和消去时的类型推理规则.</p>
+<p>Y组合子在简单类型Lambda演算中无法表示,但我们可以特别地引入不动点算子<span class="math inline">\(\mathrm{fix}\)</span>,它作用在一个函数上就相当于能够递归计算<span class="math inline">\(\mathrm{fix}\;f=f(\mathrm{fix}\;f)\)</span>.它的类型可以表示为<span class="math inline">\(\mathrm{fix}:(T\to T)\to T\)</span>.但是,引入<span class="math inline">\(\mathrm{fix}\)</span>会使我们很容易构造出发散的项,实质上破坏了系统的类型安全性.</p>
+<p>我们也可以引入列表<span class="math inline">\(\mathrm{List}\;T\)</span>,这里不再详述.</p>
+<p>类比集合中的包含关系,我们可以引入子类型的概念:如果<span class="math inline">\(S\)</span>的任何项都可以当作<span class="math inline">\(T\)</span>的项来使用(类型安全),那么就称<span class="math inline">\(S&lt;:T\)</span>.在此基础上,我们会引入新的推理规则:既包括产生子类型关系的推理规则,又包括子类型作用于项上得到的推理规则.</p>
+<p>前者会产生协变和逆变的概念:设有某个类型构造器<span class="math inline">\(F[T]\)</span>,如果<span class="math inline">\(S&lt;:T \Rightarrow F[S]&lt;:F[T]\)</span>那么就是协变的,如果<span class="math inline">\(S&lt;:T \Rightarrow F[T]&lt;:F[S]\)</span>那么就是逆变的.记录对它的每一项都是协变的,函数类型对参数类型是逆变的而对返回类型是协变的.</p>
+<h2 id="多态hindley-milnersystem-f">多态、Hindley Milner、System F</h2>
+<p>多态即是希望一个项可以具有多种可能的类型,但根据调用的上下文又可以确定被调用时真正的类型.简单类型Lambda演算只支持确定的类型,为了达到多态我们会引入类型变量<span class="math inline">\(\alpha\)</span>以及全称量词<span class="math inline">\(\forall\)</span>.在这种情况下,我们的类型可以利用全称量词来构造:<span class="math inline">\(\forall\alpha\;T\)</span>,而Lambda表达式也可以引入类型变量:<span class="math inline">\(\Lambda\alpha.\;t\)</span>.例如,我们可以写出<span class="math inline">\((\Lambda\alpha.\lambda x:\alpha.\;x):\forall\alpha\;\alpha\to\alpha\)</span>.</p>
+<p>具有这样的全称类型(universal type)的系统我们叫做System F;它也叫二阶类型系统,这是因为它对应的是二阶逻辑系统(的一部分).二阶系统允许将谓词作为全称量词的变量,一阶系统则是允许将对象作为全称量词的变量.顺便一提,一阶逻辑系统对应的类型系统是依赖于项的类型(dependent type),只有依赖类型和类型变量都存在时才能对应到完整的二阶逻辑系统.</p>
+<p>System F本身已经是一个非常大的系统了;一个最大的特点就是System F中的类型推导是不可判定问题.由于这个缺点,实际的语言可能希望弱化System F,得到一个比较实际的类型系统,这就是Hindley Milner类型系统,它要求类型变量必须在最开始就写出来,也就是不允许<span class="math inline">\((\forall\alpha\;\alpha\to\alpha)\to T\)</span>这样的类型.在这样的类型系统中,类型推导可以转化为给定两个带参数的类型,寻找一种对参数的取法(代换)使得两个类型相同,这就是所谓的合一.这样的类型推导算法也叫Algorithm W.</p>
+<p>System F可以加上子类型,此时我们会希望写出<span class="math inline">\(\forall\alpha&lt;:T\)</span>一类的式子(叫做受限量词bounded quantifier),这样得到的类型系统叫做<span class="math inline">\(F_{&lt;:}\)</span>.我们还可以拓展到高阶类型,将类型构造器也放到全称量词后面:具体而言,我们将确定的类型和类型变量放入同一个类,记作<span class="math inline">\(T::*\)</span>;接受一个类型得到一个类型的类型构造器则输出另一个类,记作<span class="math inline">\(F::*\to*\)</span>.在此基础上,我们可以构造出类型间的函数"类",这些类叫做类型类,对应的类型叫高阶类型,得到的系统则叫做<span class="math inline">\(F_\omega\)</span>.</p>
+<p>最后我们以lambda cube结束这篇文章.从<span class="math inline">\(\lambda_\to\)</span>出发,我们可以加入三种要素:依赖类型、多态(类型变量)、类型算子(类型构造器),分别得到的是LF(Logical Framework)、System F、<span class="math inline">\(\lambda_\omega\)</span>. System F加上类型算子得到的则是<span class="math inline">\(F_\omega\)</span>,再加上依赖类型则成为了CC(Calculus of Constructions).这些类型系统(加上一些未提及的类型系统)组成了一个立方体,即是lambda cube.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/06/%E9%87%8D%E5%90%AF/" rel="prev" title="重启">
+      <i class="fa fa-chevron-left"></i> 重启
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/08/%E5%86%99%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%87%BD%E6%95%B0%E5%BC%8F%E8%AF%AD%E8%A8%80%E8%A7%A3%E9%87%8A%E5%99%A8/" rel="next" title="写一个简单的函数式语言解释器">
+      写一个简单的函数式语言解释器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E7%B1%BB%E5%9E%8Blambda%E6%BC%94%E7%AE%97"><span class="nav-number">1.</span> <span class="nav-text">无类型Lambda演算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%B1%BB%E5%9E%8Blambda%E6%BC%94%E7%AE%97"><span class="nav-number">2.</span> <span class="nav-text">简单类型Lambda演算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%B1%BB%E5%9E%8Blambda%E6%BC%94%E7%AE%97%E7%9A%84%E6%89%A9%E5%B1%95"><span class="nav-number">3.</span> <span class="nav-text">简单类型Lambda演算的扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%80%81hindley-milnersystem-f"><span class="nav-number">4.</span> <span class="nav-text">多态、Hindley Milner、System F</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">PeriodicLaw</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PeriodicLaw</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

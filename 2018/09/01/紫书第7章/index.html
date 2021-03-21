@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本章我的代码见github。 7.4节例题7-5 uva129 7.4节例题7-7 uva1354 标程很值得学习，用位运算处理子集，用vector&lt;pair&lt;double,double&gt;&gt;存储某个子集对应的所有可能的L,R值，并且预处理计算sum。注意如果s&#x3D;1那么答案就是0，我因为算ans时把0作为初始值，最后判断如果ans&#x3D;0就输出-1而WA1次。 7.6节例题7-1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="紫书第7章">
+<meta property="og:url" content="http://example.com/2018/09/01/%E7%B4%AB%E4%B9%A6%E7%AC%AC7%E7%AB%A0/index.html">
+<meta property="og:site_name" content="PerodicLaw的个人博客">
+<meta property="og:description" content="本章我的代码见github。 7.4节例题7-5 uva129 7.4节例题7-7 uva1354 标程很值得学习，用位运算处理子集，用vector&lt;pair&lt;double,double&gt;&gt;存储某个子集对应的所有可能的L,R值，并且预处理计算sum。注意如果s&#x3D;1那么答案就是0，我因为算ans时把0作为初始值，最后判断如果ans&#x3D;0就输出-1而WA1次。 7.6节例题7-1">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-01T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-21T09:04:11.055Z">
+<meta property="article:author" content="PeriodicLaw">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2018/09/01/%E7%B4%AB%E4%B9%A6%E7%AC%AC7%E7%AB%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>紫书第7章 | PerodicLaw的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">PerodicLaw的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/09/01/%E7%B4%AB%E4%B9%A6%E7%AC%AC7%E7%AB%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="PeriodicLaw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PerodicLaw的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          紫书第7章
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-01 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-01T00:00:00+00:00">2018-09-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-21 09:04:11" itemprop="dateModified" datetime="2021-03-21T09:04:11+00:00">2021-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B4%AB%E4%B9%A6/" itemprop="url" rel="index"><span itemprop="name">紫书</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本章我的代码见<a target="_blank" rel="noopener" href="https://github.com/PeriodicLaw/programming-practice/tree/master/aoapc2/chapter7">github</a>。</p>
+<h1 id="节例题7-5-uva129">7.4节例题7-5 uva129</h1>
+<h1 id="节例题7-7-uva1354">7.4节例题7-7 uva1354</h1>
+<p>标程很值得学习，用位运算处理子集，用vector&lt;pair&lt;double,double&gt;&gt;存储某个子集对应的所有可能的L,R值，并且预处理计算sum。注意如果s=1那么答案就是0，我因为算ans时把0作为初始值，最后判断如果ans=0就输出-1而WA1次。</p>
+<h1 id="节例题7-12-uva1343">7.6节例题7-12 uva1343</h1>
+<p>不要被lrj骗了，BFS+判重是要TLE的！原因在于转移代价很高，而且如果选定的目标数字不对的话BFS会遍历相当多的状态还没用。正确的做法只能是IDA*，估价函数为8-目标位置中出现最多数字的次数（因为每次操作最多把1个目标数字加入目标位置中）。</p>
+<h1 id="节例题7-14-uva1602">7.6节例题7-14 uva1602</h1>
+<p>标程也很值得学习，用set&lt;pair&lt;int,int&gt;&gt;以散点的形式存储网格，在套上一个set以查重。大量使用STL和foreach能使代码变简洁。 值得注意的是编程时发现的一个小地方：如果f(T&amp;)的实参是const T&amp;类型的，C++编译器会隐式类型转换，创造一个从调用的实参拷贝过来的临时变量作为真正的实参。</p>
+<h1 id="习题7-4-uva818">习题7-4 uva818</h1>
+<p>IDS要打开的圆环，判断剩下的圆环是否都形成链以及是否满足开环数+1&gt;=链数。连通集形成链的条件是要么d0=1要么d2=2且d(&gt;=3)=0（这里dn表示度数为n的点的个数）。<br />
+写的时候问题颇多。写BFS，莫名其妙地RE2次（推测是队列开的不够大），写IDS先是忘了判重TLE1次，然后是漏了d0=1（即单个圆环）的条件WA1次。</p>
+<h1 id="习题7-7-uva12558">习题7-7 uva12558</h1>
+<p>IDA*，剪枝条件是1/n&lt;a/b&lt;=rd/n，这里rd表示剩余层数。只要用long long就可以无视题目中关于溢出的提示。注意判断被排除的分母时可能会超出数组范围导致RE，以及要对最后一个分母做排除判断。然后不要漏了文件尾的，输出用%lld而不是%I64d否则会PE。这些莫名其妙的细节错误一直改不对，前前后后错了20次。</p>
+<h1 id="习题7-8-uva12107">习题7-8 uva12107</h1>
+<p>先IDDFS修改方案，再DFS判断是否有唯一解。注意第二层DFS的时候只要枚举出左边两个数就可以直接判断等式是否成立了。做的时候有很多细节性的错误导致WA……感谢<a target="_blank" rel="noopener" href="https://www.udebug.com/UVa/12107">uDebug</a>和用户szp14提供的随机数据。</p>
+<h1 id="习题7-9-uva1604">习题7-9 uva1604</h1>
+<p>这绝对是我做过的最恶心的一题！！！用9个0~6表示方阵状态，用hash表判重（也可以用八位六进制数+空格坐标作为状态直接存储，开一个<span class="math inline">\(9\times 6^8\)</span>的数组，反正uva空间多）。<br />
+先写BFS然后TLE，怒写双向BFS然后还是TLE。搜题解发现要控制正向和反向的搜索层数（因为反向初始状态有<span class="math inline">\(2^8\)</span>个），正向21层反向9层最好，改了以后程序的时间从&gt;3000ms变成了230~240ms。</p>
+<h1 id="习题7-13-uva817">习题7-13 uva817</h1>
+<p>注意表达式中一定要有至少一个运算符！或者直接单独处理输入2000=的情况也行。这里再次感谢uDebug和用户szp14。</p>
+<h1 id="习题7-15-uva11882">习题7-15 uva11882</h1>
+<p>DFS，但是因为是求最大数所以不容易剪枝，R*C=30的时候又容易TLE。我统计了数字格的个数，当目前最优解取满了所有数字格后就开始剪枝，居然就AC了……</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/31/%E7%B4%AB%E4%B9%A6%E7%AC%AC6%E7%AB%A0/" rel="prev" title="紫书第6章">
+      <i class="fa fa-chevron-left"></i> 紫书第6章
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/09/21/%E7%B4%AB%E4%B9%A6%E7%AC%AC8%E7%AB%A0/" rel="next" title="紫书第8章">
+      紫书第8章 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%987-5-uva129"><span class="nav-number">1.</span> <span class="nav-text">7.4节例题7-5 uva129</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%987-7-uva1354"><span class="nav-number">2.</span> <span class="nav-text">7.4节例题7-7 uva1354</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%987-12-uva1343"><span class="nav-number">3.</span> <span class="nav-text">7.6节例题7-12 uva1343</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8A%82%E4%BE%8B%E9%A2%987-14-uva1602"><span class="nav-number">4.</span> <span class="nav-text">7.6节例题7-14 uva1602</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%987-4-uva818"><span class="nav-number">5.</span> <span class="nav-text">习题7-4 uva818</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%987-7-uva12558"><span class="nav-number">6.</span> <span class="nav-text">习题7-7 uva12558</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%987-8-uva12107"><span class="nav-number">7.</span> <span class="nav-text">习题7-8 uva12107</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%987-9-uva1604"><span class="nav-number">8.</span> <span class="nav-text">习题7-9 uva1604</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%987-13-uva817"><span class="nav-number">9.</span> <span class="nav-text">习题7-13 uva817</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%987-15-uva11882"><span class="nav-number">10.</span> <span class="nav-text">习题7-15 uva11882</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">PeriodicLaw</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PeriodicLaw</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
